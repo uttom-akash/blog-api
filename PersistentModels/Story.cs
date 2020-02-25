@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Blog_Rest_Api.Persistent_Model{
     public class Story{
-        public string StoryId {get;set;}
+        public Guid StoryId {get;set;}
         [MinLength(10)]
         public string Title {get;set;}
         [MinLength(100)]
