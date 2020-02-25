@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
+using Blog_Rest_Api.Auto_Mapper;
 
 namespace Blog_Rest_Api
 {
@@ -37,7 +38,7 @@ namespace Blog_Rest_Api
             services.AddControllers()
                 .AddXmlSerializerFormatters();
                 
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(AutoMapping));
             services.AddDbContext<BlogContext>();
             services.AddSwagger();
 
