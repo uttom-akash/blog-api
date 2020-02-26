@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Blog_Rest_Api.Custom_Attribute;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -19,40 +20,24 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpPost]
+        [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> Story([FromBody]StoryDTO storyDTO){
-            if(ModelState.IsValid){
-
-                return Ok(await storiesService.CreateStoryAsync(storyDTO));
-            }
-            string errorMessage = string.Join(", ", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
-            return BadRequest(errorMessage); 
+            return Ok(await storiesService.CreateStoryAsync(storyDTO));
         }
 
         [HttpGet]
+        [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> Stories(){
-            if(ModelState.IsValid){
-
-                return Ok(await storiesService.GetStoryAsync());
-            }
-            string errorMessage = string.Join(", ", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
-            return BadRequest(errorMessage); 
+            return Ok(await storiesService.GetStoryAsync());
         }
 
          [HttpGet("{storyId}")]
+         [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> Story([Required]Guid storyId){
-            if(ModelState.IsValid){
-
-                return Ok(await storiesService.GetStoryAsync(storyId));
-            }
-            string errorMessage = string.Join(", ", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
-            return BadRequest(errorMessage); 
+            return Ok(await storiesService.GetStoryAsync(storyId)); 
         }
-
-
-
-
     }
 }
