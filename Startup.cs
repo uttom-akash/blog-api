@@ -35,9 +35,7 @@ namespace Blog_Rest_Api
             services.ConfigureDatabaseInfo(Configuration);
 
             // BuiltIn 
-            services.AddControllers()
-                .AddXmlSerializerFormatters();
-                
+            services.AddCustomControllers();
             services.AddAutoMapper(typeof(AutoMapping));
             services.AddDbContext<BlogContext>();
             services.AddSwagger();

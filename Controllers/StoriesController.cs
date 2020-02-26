@@ -39,5 +39,7 @@ namespace Blog_Rest_Api.Controllers{
         public async Task<IActionResult> Story([Required]Guid storyId){
             return Ok(await storiesService.GetStoryAsync(storyId)); 
         }
+
+        
     }
 }
