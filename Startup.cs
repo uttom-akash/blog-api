@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using AutoMapper;
+using Blog_Rest_Api.Auto_Mapper;
 
 namespace Blog_Rest_Api
 {
@@ -33,7 +35,8 @@ namespace Blog_Rest_Api
             services.ConfigureDatabaseInfo(Configuration);
 
             // BuiltIn 
-            services.AddControllers();
+            services.AddCustomControllers();
+            services.AddAutoMapper(typeof(AutoMapping));
             services.AddDbContext<BlogContext>();
             services.AddSwagger();
 
