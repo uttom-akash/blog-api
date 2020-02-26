@@ -10,5 +10,6 @@ namespace Blog_Rest_Api.Repositories{
         Task<List<Story>> GetStoryAsync();
         Task<Story> GetStoryAsync(Guid storyId);
         Task<string> ReplaceStoryAsync(Story story);
+        Task<string> RemoveStoryAsync(Guid storyId);
     }
 }

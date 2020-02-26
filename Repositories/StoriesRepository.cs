@@ -43,5 +43,14 @@ namespace Blog_Rest_Api.Repositories{
             return resultStatus==0 ? "notModified" : "modified" ;
         }
 
+        public async Task<string> RemoveStoryAsync(Guid storyId){
+            Story persistentStory=await blogContext.Stories.AsNoTracking().FirstOrDefaultAsync(s=>s.StoryId==storyId);
+            if(persistentStory==null)
+                return "notFound";
+            blogContext.Stories.Remove(persistentStory);
+            var resultStatus=await blogContext.SaveChangesAsync();
+            return resultStatus==0 ? "notDeleted" : "deleted" ;
+        }
+
     }
 }

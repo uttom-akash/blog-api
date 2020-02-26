@@ -44,5 +44,9 @@ namespace Blog_Rest_Api.Services{
             string status=await storiesRepository.ReplaceStoryAsync(storyDTO);
             return status;
         }
+
+        public async Task<string> RemoveStoryAsync(Guid storyId){
+            return await storiesRepository.RemoveStoryAsync(storyId);
+        }
     }
 }

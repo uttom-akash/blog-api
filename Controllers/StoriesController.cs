@@ -46,6 +46,12 @@ namespace Blog_Rest_Api.Controllers{
             return Ok(await storiesService.ReplaceStoryAsync(storyDTO));
         }
 
+        [HttpDelete("story/{storyId}")]
+        [ValidateModel]
+        // [Consumes("application/json", new string[]{"application/xml"})]
+        public async Task<IActionResult> RemoveStory([Required]Guid storyId){
+            return Ok(await storiesService.RemoveStoryAsync(storyId)); 
+        }
         
     }
 }
