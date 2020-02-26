@@ -38,5 +38,11 @@ namespace Blog_Rest_Api.Services{
             StoryDTO storyDTO=mapper.Map<StoryDTO>(story);
             return storyDTO;
         }
+
+        public async Task<string> ReplaceStoryAsync(StoryDTO storyDTO)
+        {
+            string status=await storiesRepository.ReplaceStoryAsync(storyDTO);
+            return status;
+        }
     }
 }
