@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog_Rest_Api.Controllers{
 
-    [Route("/v1/[controller]/[action]")]
+    [Route("/v1/[controller]")]
     public class StoriesController : BaseController
     {
         private readonly IStoriesService storiesService;
@@ -19,25 +19,31 @@ namespace Blog_Rest_Api.Controllers{
             this.storiesService = storiesService;
         }
 
-        [HttpPost]
+        [HttpPost("story")]
         [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
-        public async Task<IActionResult> Story([FromBody]StoryDTO storyDTO){
+        public async Task<IActionResult> CreateStory([FromBody]StoryDTO storyDTO){
             return Ok(await storiesService.CreateStoryAsync(storyDTO));
         }
 
-        [HttpGet]
+        [HttpGet("stories")]
         [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
-        public async Task<IActionResult> Stories(){
+        public async Task<IActionResult> GetStories(){
             return Ok(await storiesService.GetStoryAsync());
         }
 
-         [HttpGet("{storyId}")]
-         [ValidateModel]
+        [HttpGet("story/{storyId}")]
+        [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
-        public async Task<IActionResult> Story([Required]Guid storyId){
+        public async Task<IActionResult> GetStory([Required]Guid storyId){
             return Ok(await storiesService.GetStoryAsync(storyId)); 
+        }
+
+        [HttpPut("story")]
+        [ValidateModel]
+        public async Task<IActionResult> UpdateStory([FromBody]StoryDTO storyDTO){
+            return Ok(await storiesService.ReplaceStoryAsync(storyDTO));
         }
 
         

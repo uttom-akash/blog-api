@@ -9,5 +9,6 @@ namespace Blog_Rest_Api.Repositories{
         Task<int> AddStoryAsync(Story story);
         Task<List<Story>> GetStoryAsync();
         Task<Story> GetStoryAsync(Guid storyId);
+        Task<string> ReplaceStoryAsync(Story story);
     }
 }

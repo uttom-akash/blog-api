@@ -9,6 +9,7 @@ namespace Blog_Rest_Api.Services{
         Task<bool> CreateStoryAsync(StoryDTO story);
         Task<List<StoryDTO>> GetStoryAsync();
         Task<StoryDTO> GetStoryAsync(Guid storyId);
+        Task<string> ReplaceStoryAsync(StoryDTO storyDTO);
 
     }
 }

@@ -23,12 +23,25 @@ namespace Blog_Rest_Api.Repositories{
 
         public async Task<List<Story>> GetStoryAsync()
         {
-            return await blogContext.Stories.ToListAsync();
+            return await blogContext.Stories.AsNoTracking().ToListAsync();
         }
 
         public async Task<Story> GetStoryAsync(Guid storyId)
         {
-            return await blogContext.Stories.Where(story=>story.StoryId==storyId).FirstOrDefaultAsync();
+            return await blogContext.Stories.AsNoTracking().Where(story=>story.StoryId==storyId).FirstOrDefaultAsync();
         }
+
+        public async Task<string> ReplaceStoryAsync(Story story)
+        {
+            
+            Story persistentStory=await blogContext.Stories.AsNoTracking().FirstOrDefaultAsync(s=>s.StoryId==story.StoryId);
+            if(persistentStory==null)
+                return "notFound";
+                
+            blogContext.Stories.Attach(story).State=EntityState.Modified;
+            var resultStatus=await blogContext.SaveChangesAsync();
+            return resultStatus==0 ? "notModified" : "modified" ;
+        }
+
     }
 }
