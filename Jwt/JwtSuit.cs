@@ -23,7 +23,7 @@ namespace Blog_Rest_Api.Jwt{
             var securityToken=new JwtSecurityToken(
                 issuer:jwtInfo.Value.ValidIssuer,
                 audience:jwtInfo.Value.ValidAudience,
-                expires:DateTime.UtcNow.AddHours(jwtInfo.Value.expires),
+                expires:DateTime.UtcNow.AddHours(jwtInfo.Value.Expires),
                 claims:claims,
                 signingCredentials:new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha256Signature)
             );

@@ -20,7 +20,7 @@ namespace Blog_Rest_Api.Services{
             this.jwtSuit = jwtSuit;
         }
 
-        public async Task<bool> RegisterAsync(UserRegistrationDTO userRegistrationDTO)
+        public async Task<DBStatus> RegisterAsync(UserRegistrationDTO userRegistrationDTO)
         {
             string passwordHash=ConverterSuit.ByteArrayToHex(HashSuit.ComputeSha256(Encoding.UTF8.GetBytes(userRegistrationDTO.Password)));
             User user=new User{
@@ -30,8 +30,8 @@ namespace Blog_Rest_Api.Services{
                 PasswordHash=passwordHash
             };
 
-            int resStatus=await authRepository.RegisterAsync(user);
-            return resStatus==1 ? true :false;
+            DBStatus status=await authRepository.RegisterAsync(user);
+            return status;
         }
         public async Task<UserInfoDTO> LoginAsync(UserCredentialsDTO credentialsDTO)
         {
@@ -39,7 +39,7 @@ namespace Blog_Rest_Api.Services{
             User user=await authRepository.LoginAsync(credentialsDTO.UserId,passwordHash);
             
             if(user==null)
-                return new UserInfoDTO();
+                return null;
 
             UserInfoDTO userInfo=new UserInfoDTO{
                 UserId=user.UserId,

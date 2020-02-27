@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog_Rest_Api.Persistent_Model;
+using Blog_Rest_Api.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog_Rest_Api.Repositories{
@@ -14,11 +15,11 @@ namespace Blog_Rest_Api.Repositories{
            this.blogContext=blogContext;
         }
 
-        public async Task<int> AddStoryAsync(Story story)
+        public async Task<DBStatus> AddStoryAsync(Story story)
         {
             blogContext.Stories.Add(story);
             var resultStatus=await blogContext.SaveChangesAsync();
-            return resultStatus;
+            return resultStatus==0 ? DBStatus.Failed : DBStatus.Added;
         }
 
         public async Task<List<Story>> GetStoryAsync()
@@ -31,25 +32,25 @@ namespace Blog_Rest_Api.Repositories{
             return await blogContext.Stories.AsNoTracking().Where(story=>story.StoryId==storyId).FirstOrDefaultAsync();
         }
 
-        public async Task<string> ReplaceStoryAsync(Story story)
+        public async Task<DBStatus> ReplaceStoryAsync(Story story)
         {
             
             Story persistentStory=await blogContext.Stories.AsNoTracking().FirstOrDefaultAsync(s=>s.StoryId==story.StoryId);
             if(persistentStory==null)
-                return "notFound";
+                return DBStatus.NotFound;
                 
             blogContext.Stories.Attach(story).State=EntityState.Modified;
             var resultStatus=await blogContext.SaveChangesAsync();
-            return resultStatus==0 ? "notModified" : "modified" ;
+            return resultStatus==0 ? DBStatus.NotModified : DBStatus.Modified ;
         }
 
-        public async Task<string> RemoveStoryAsync(Guid storyId){
+        public async Task<DBStatus> RemoveStoryAsync(Guid storyId){
             Story persistentStory=await blogContext.Stories.AsNoTracking().FirstOrDefaultAsync(s=>s.StoryId==storyId);
             if(persistentStory==null)
-                return "notFound";
+                return DBStatus.NotFound;
             blogContext.Stories.Remove(persistentStory);
             var resultStatus=await blogContext.SaveChangesAsync();
-            return resultStatus==0 ? "notDeleted" : "deleted" ;
+            return resultStatus==0 ? DBStatus.NotDeleted : DBStatus.Deleted ;
         }
 
     }

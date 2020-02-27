@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blog_Rest_Api.Custom_Attribute;
 using Blog_Rest_Api.DTOModels;
+using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Services;
+using Blog_Rest_Api.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog_Rest_Api.Controllers{
@@ -22,13 +24,20 @@ namespace Blog_Rest_Api.Controllers{
         [HttpPost("[action]")]
         [ValidateModel]
         public async Task<IActionResult> Register([FromBody] UserRegistrationDTO userRegistrationDTO){
-            return Ok(await authService.RegisterAsync(userRegistrationDTO));
+            DBStatus status=await authService.RegisterAsync(userRegistrationDTO);
+            ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
+            if(status==DBStatus.Failed)
+                return BadRequest(responseStatusDTO);
+            return  Ok(responseStatusDTO);
         }
 
         [HttpPost("[action]")]
         [ValidateModel]
         public async Task<IActionResult> Login([FromBody] UserCredentialsDTO userCredentialsDTO){
-            return Ok(await authService.LoginAsync(userCredentialsDTO));
+            UserInfoDTO userInfoDTO =await authService.LoginAsync(userCredentialsDTO);
+            if(userInfoDTO==null)
+                return NoContent();
+            return Ok(userInfoDTO);
         }
 
     }

@@ -6,6 +6,7 @@ using AutoMapper;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Repositories;
+using Blog_Rest_Api.Utils;
 
 namespace Blog_Rest_Api.Services{
     class StoriesService:IStoriesService
@@ -19,10 +20,10 @@ namespace Blog_Rest_Api.Services{
             this.mapper = mapper;
         }
 
-        public async Task<bool> CreateStoryAsync(StoryDTO storyDTO)
+        public async Task<DBStatus> CreateStoryAsync(StoryDTO storyDTO)
         {
-            int status=await storiesRepository.AddStoryAsync(storyDTO);
-            return status==1 && true;
+            DBStatus status=await storiesRepository.AddStoryAsync(storyDTO);
+            return status;
         }
 
         public async Task<List<StoryDTO>> GetStoryAsync()
@@ -39,13 +40,13 @@ namespace Blog_Rest_Api.Services{
             return storyDTO;
         }
 
-        public async Task<string> ReplaceStoryAsync(StoryDTO storyDTO)
+        public async Task<DBStatus> ReplaceStoryAsync(StoryDTO storyDTO)
         {
-            string status=await storiesRepository.ReplaceStoryAsync(storyDTO);
+            DBStatus status=await storiesRepository.ReplaceStoryAsync(storyDTO);
             return status;
         }
 
-        public async Task<string> RemoveStoryAsync(Guid storyId){
+        public async Task<DBStatus> RemoveStoryAsync(Guid storyId){
             return await storiesRepository.RemoveStoryAsync(storyId);
         }
     }

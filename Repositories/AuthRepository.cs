@@ -3,6 +3,7 @@ using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Blog_Rest_Api.Utils;
 
 namespace Blog_Rest_Api.Repositories{
     public class AuthRepository : IAuthRepository
@@ -13,11 +14,11 @@ namespace Blog_Rest_Api.Repositories{
            this.blogContext=blogContext;
         }
 
-        public async Task<int> RegisterAsync(User user)
+        public async Task<DBStatus> RegisterAsync(User user)
         {
             await blogContext.Users.AddAsync(user);
             var resultStatus=await blogContext.SaveChangesAsync();
-            return resultStatus;
+            return resultStatus==1 ? DBStatus.Added : DBStatus.Failed;
         }
         public async Task<User> LoginAsync(string userId,string passwordHash)
         {
