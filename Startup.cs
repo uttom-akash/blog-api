@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
 using Blog_Rest_Api.Auto_Mapper;
+using Blog_Rest_Api.Jwt;
 
 namespace Blog_Rest_Api
 {
@@ -33,17 +34,24 @@ namespace Blog_Rest_Api
         {
             // Configuration
             services.ConfigureDatabaseInfo(Configuration);
+            services.ConfigureJwtInfo(Configuration);
 
             // BuiltIn 
             services.AddCustomControllers();
             services.AddAutoMapper(typeof(AutoMapping));
             services.AddDbContext<BlogContext>();
             services.AddSwagger();
+            services.AddJwtBearer();
+            services.AddAuthorization();
+            
 
             // Custom
             services.AddScoped<IStoriesRepository,StoriesRepository>();
+            services.AddScoped<IAuthRepository,AuthRepository>();
+
             services.AddScoped<IStoriesService,StoriesService>();
-            
+            services.AddScoped<IAuthService,AuthService>();
+            services.AddSingleton<JwtSuit>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -58,6 +66,10 @@ namespace Blog_Rest_Api
             app.UseSwaggerUI(c =>c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blog-Rest-Api"));
 
             app.UseRouting();
+            
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>endpoints.MapControllers());
 
             
