@@ -37,11 +37,7 @@ namespace Blog_Rest_Api.Exceptions{
                 StatusCode = responseException.Status,
             };
             context.ExceptionHandled = true;
-            
-
             logger.LogError(10001,responseException.Message);
-            context.ExceptionHandled = true;
-
         }
     }
 }
