@@ -41,7 +41,7 @@ namespace Blog_Rest_Api
             services.AddAutoMapper(typeof(AutoMapping));
             services.AddDbContext<BlogContext>();
             services.AddSwagger();
-            services.AddJwtBearer();
+            services.AddJwtBearer(Configuration);
             services.AddAuthorization();
             
 

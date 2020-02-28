@@ -45,7 +45,7 @@ namespace Blog_Rest_Api.Services{
                 UserId=user.UserId,
                 FirstName=user.FirstName,
                 LastName=user.LastName,
-                JwtToken=jwtSuit.GetToken(user.FirstName)
+                JwtToken=jwtSuit.GetToken(user)
             };
             return userInfo;
         }

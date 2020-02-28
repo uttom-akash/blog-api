@@ -5,6 +5,7 @@ using Blog_Rest_Api.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
 
 namespace Blog_Rest_Api{
     public static class ServiceRegisterer
@@ -23,7 +24,7 @@ namespace Blog_Rest_Api{
                 .AddXmlSerializerFormatters();
         }
 
-        public static void AddJwtBearer(this IServiceCollection services){
+        public static void AddJwtBearer(this IServiceCollection services,IConfiguration configuration){
 
             services.AddAuthentication(authOptions=>{
                 authOptions.DefaultAuthenticateScheme=JwtBearerDefaults.AuthenticationScheme;
@@ -35,10 +36,9 @@ namespace Blog_Rest_Api{
                     ValidateIssuer=true,
                     ValidateAudience=true,
                     ValidateIssuerSigningKey=true,
-                    
-                    ValidIssuer="cefalo.com",
-                    ValidAudience="cefalo",
-                    IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes("2fb3daa887474f18a6ed7b30f2e26b1c"))
+                    ValidIssuer=configuration["JwtInfo:ValidIssuer"],
+                    ValidAudience=configuration["JwtInfo:ValidAudience"],
+                    IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtInfo:Key"]))
                 };
             });
 

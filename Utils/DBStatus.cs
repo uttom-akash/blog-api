@@ -8,6 +8,7 @@ namespace Blog_Rest_Api.Utils
         NotModified,
         Modified,
         NotDeleted,
-        Deleted
+        Deleted,
+        Forbidden
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Blog_Rest_Api.Custom_Attribute;
 using Blog_Rest_Api.DTOModels;
@@ -12,8 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog_Rest_Api.Controllers{
 
     [Route("/v1/[controller]")]
-    
-    [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme)]
     public class StoriesController : BaseController
     {
         private readonly IStoriesService storiesService;
@@ -24,19 +23,22 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpPost("story")]
+        [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme)]
         [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> CreateStory([FromBody]StoryDTO storyDTO){
-            DBStatus status=await storiesService.CreateStoryAsync(storyDTO);
+            string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
+            DBStatus status=await storiesService.CreateStoryAsync(storyDTO,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
             if(status==DBStatus.Failed)
                 return BadRequest(responseStatusDTO);
+            else if(status==DBStatus.Forbidden)
+                return Forbid();    
             else 
                 return Ok(responseStatusDTO);
         }
 
         [HttpGet("stories")]
-        [AllowAnonymous]
         [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> GetStories(){
@@ -44,23 +46,26 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpGet("story/{storyId}")]
-        [AllowAnonymous]
         [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> GetStory([Required]Guid storyId){
-            StoryDTO story=await storiesService.GetStoryAsync(storyId);
+            ResponseStoryDTO story=await storiesService.GetStoryAsync(storyId);
             if(story==null)
-                return NoContent();
+                return NotFound();
             return Ok(story); 
         }
 
         [HttpPut("story")]
+        [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme)]
         [ValidateModel]
         public async Task<IActionResult> UpdateStory([FromBody]StoryDTO storyDTO){
-            DBStatus status=await storiesService.ReplaceStoryAsync(storyDTO);
+            string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
+            DBStatus status=await storiesService.ReplaceStoryAsync(storyDTO,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
             if(status==DBStatus.NotFound)
                 return NotFound(responseStatusDTO);
+            else if(status==DBStatus.Forbidden)
+                return Forbid();   
             else if(status==DBStatus.NotModified)
                 return BadRequest(responseStatusDTO);
             else 
@@ -68,13 +73,17 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpDelete("story/{storyId}")]
+        [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme)]
         [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> RemoveStory([Required]Guid storyId){
-            DBStatus status= await storiesService.RemoveStoryAsync(storyId);
+            string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
+            DBStatus status= await storiesService.RemoveStoryAsync(storyId,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
             if(status==DBStatus.NotFound)
                 return NotFound(responseStatusDTO);
+            else if(status==DBStatus.Forbidden)
+                return Forbid(); 
             else if(status==DBStatus.NotDeleted)
                 return BadRequest(responseStatusDTO);
             else 
