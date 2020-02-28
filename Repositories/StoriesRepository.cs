@@ -51,6 +51,23 @@ namespace Blog_Rest_Api.Repositories{
                                     .ToListAsync();
         }
 
+        public async Task<List<ResponseStoryDTO>> GetStoryAsync(int skip,int top)
+        {
+            return await blogContext.Stories
+                                    .Include(story=>story.Author)
+                                    .AsNoTracking()
+                                    .Skip(skip)
+                                    .Take(top)
+                                    .Select(story=>new ResponseStoryDTO{
+                                        StoryId=story.StoryId,
+                                        Title=story.Title,
+                                        Body=story.Body,
+                                        PublishedDate=story.PublishedDate,
+                                        Author=new AuthorDTO{AuthorId=story.AuthorId,FirstName=story.Author.FirstName,LastName=story.Author.LastName}
+                                    })
+                                    .ToListAsync();
+        }
+
         public async Task<ResponseStoryDTO> GetStoryAsync(Guid storyId)
         {
             return await blogContext.Stories.Include(story=>story.Author)

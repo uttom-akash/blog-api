@@ -32,6 +32,12 @@ namespace Blog_Rest_Api.Services{
             return stories;
         }
 
+        public async Task<List<ResponseStoryDTO>> GetStoryAsync(int skip,int top)
+        {
+            List<ResponseStoryDTO> stories=await storiesRepository.GetStoryAsync(skip,top);
+            return stories;
+        }
+
         public async Task<ResponseStoryDTO> GetStoryAsync(Guid storyId)
         {
             ResponseStoryDTO story=await storiesRepository.GetStoryAsync(storyId);

@@ -10,6 +10,7 @@ namespace Blog_Rest_Api.DTOModels{
         public string Title {get;set;}
         [MinLength(100)]
         public string Body {get;set;}
+        [DataType(DataType.Date)]
         public DateTime PublishedDate {get;set;}
     }
 }

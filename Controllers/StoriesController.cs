@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Blog_Rest_Api.Custom_Attribute;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Services;
 using Blog_Rest_Api.Utils;
+using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,10 +41,17 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpGet("stories")]
-        [ValidateModel]
         // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> GetStories(){
-            return Ok(await storiesService.GetStoryAsync());
+            List<ResponseStoryDTO>  stories=await storiesService.GetStoryAsync();
+            return Ok(stories);
+        }
+
+        [HttpGet("stories/{skip}/{top}")]
+        // [Consumes("application/json", new string[]{"application/xml"})]
+        public async Task<IActionResult> GetStories([Required]int skip,[Required]int top){
+            List<ResponseStoryDTO>  stories=await storiesService.GetStoryAsync(skip,top);
+            return Ok(stories);
         }
 
         [HttpGet("story/{storyId}")]

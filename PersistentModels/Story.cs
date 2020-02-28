@@ -9,7 +9,7 @@ namespace Blog_Rest_Api.Persistent_Model{
         public string Title {get;set;}
         [MinLength(100)]
         public string Body {get;set;}
-         [DataType(DataType.Date)]
+        [DataType(DataType.Date)]
         public DateTime PublishedDate {get;set;}
         public User Author {get;set;}
         [ForeignKey("Author")]
