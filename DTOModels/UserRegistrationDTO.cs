@@ -7,10 +7,13 @@ namespace Blog_Rest_Api.DTOModels{
     {
         [RegularExpression(@"^[a-zA-Z0-9]*$", ErrorMessage = "Characters should be Alphanumeric")]
         [MinLength(5)]
+        [MaxLength(100)]
         public string UserId {get;set;}        
         [RegularExpression(@"^[a-zA-Z]*$", ErrorMessage = "Characters should be Alphabate")]
         [MinLength(5)]
+        [MaxLength(100)]
         public string FirstName {get;set;}
+        [MaxLength(100)]
         public string LastName {get;set;}
         [MinLength(5)]
         [ValidatePassword(minLength=5,minAlphabet=2,minNumeric=1)]

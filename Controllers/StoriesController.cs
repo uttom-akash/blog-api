@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog_Rest_Api.Controllers{
 
     [Route("/v1/[controller]")]
+    [Consumes("application/json", new string[]{"application/xml"})]
+    [Produces("application/json", new string[]{"application/xml"})]    
     public class StoriesController : BaseController
     {
         private readonly IStoriesService storiesService;
@@ -24,11 +26,11 @@ namespace Blog_Rest_Api.Controllers{
             this.storiesService = storiesService;
         }
 
+
         [HttpPost("story")]
-        [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         [ValidateModel]
-        // [Consumes("application/json", new string[]{"application/xml"})]
-        public async Task<IActionResult> CreateStory([FromBody]StoryDTO storyDTO){
+        public async Task<IActionResult> CreateStory([FromBody]RequestStoryDTO storyDTO){
             string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
             DBStatus status=await storiesService.CreateStoryAsync(storyDTO,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
@@ -41,22 +43,15 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpGet("stories")]
-        // [Consumes("application/json", new string[]{"application/xml"})]
-        public async Task<IActionResult> GetStories(){
-            List<ResponseStoryDTO>  stories=await storiesService.GetStoryAsync();
-            return Ok(stories);
-        }
-
+        [HttpGet("stories/{skip}")]
         [HttpGet("stories/{skip}/{top}")]
-        // [Consumes("application/json", new string[]{"application/xml"})]
-        public async Task<IActionResult> GetStories([Required]int skip,[Required]int top){
+        public async Task<IActionResult> GetStories(int skip=0,int top=50){
             List<ResponseStoryDTO>  stories=await storiesService.GetStoryAsync(skip,top);
             return Ok(stories);
         }
 
         [HttpGet("story/{storyId}")]
         [ValidateModel]
-        // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> GetStory([Required]Guid storyId){
             ResponseStoryDTO story=await storiesService.GetStoryAsync(storyId);
             if(story==null)
@@ -65,9 +60,9 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpPut("story")]
-        [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         [ValidateModel]
-        public async Task<IActionResult> UpdateStory([FromBody]StoryDTO storyDTO){
+        public async Task<IActionResult> UpdateStory([FromBody]RequestStoryDTO storyDTO){
             string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
             DBStatus status=await storiesService.ReplaceStoryAsync(storyDTO,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
@@ -82,9 +77,8 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpDelete("story/{storyId}")]
-        [Authorize(AuthenticationSchemes=JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         [ValidateModel]
-        // [Consumes("application/json", new string[]{"application/xml"})]
         public async Task<IActionResult> RemoveStory([Required]Guid storyId){
             string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
             DBStatus status= await storiesService.RemoveStoryAsync(storyId,userId);

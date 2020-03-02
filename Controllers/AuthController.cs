@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blog_Rest_Api.Controllers{
 
     [Route("/v1/[controller]")]
+    [Consumes("application/json", new string[]{"application/xml"})]
+    [Produces("application/json", new string[]{"application/xml"})] 
     public class AuthController : BaseController
     {
         private readonly IAuthService authService;
@@ -36,7 +38,7 @@ namespace Blog_Rest_Api.Controllers{
         public async Task<IActionResult> Login([FromBody] UserCredentialsDTO userCredentialsDTO){
             UserInfoDTO userInfoDTO =await authService.LoginAsync(userCredentialsDTO);
             if(userInfoDTO==null)
-                return NoContent();
+                return BadRequest("Credentials are wrong");
             return Ok(userInfoDTO);
         }
 

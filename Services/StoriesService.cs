@@ -20,7 +20,7 @@ namespace Blog_Rest_Api.Services{
             this.mapper = mapper;
         }
 
-        public async Task<DBStatus> CreateStoryAsync(StoryDTO storyDTO,string userId)
+        public async Task<DBStatus> CreateStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
             DBStatus status=await storiesRepository.AddStoryAsync(storyDTO,userId);
             return status;
@@ -44,7 +44,7 @@ namespace Blog_Rest_Api.Services{
             return story;
         }
 
-        public async Task<DBStatus> ReplaceStoryAsync(StoryDTO storyDTO,string userId)
+        public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
             DBStatus status=await storiesRepository.ReplaceStoryAsync(storyDTO,userId);
             return status;

@@ -8,11 +8,11 @@ using Blog_Rest_Api.Utils;
 namespace Blog_Rest_Api.Repositories{
     interface IStoriesRepository
     {
-        Task<DBStatus> AddStoryAsync(StoryDTO story,string userId);
+        Task<DBStatus> AddStoryAsync(RequestStoryDTO story,string userId);
         Task<List<ResponseStoryDTO>> GetStoryAsync();
         Task<List<ResponseStoryDTO>> GetStoryAsync(int skip,int top);
         Task<ResponseStoryDTO> GetStoryAsync(Guid storyId);
-        Task<DBStatus> ReplaceStoryAsync(StoryDTO story,string userId);
+        Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO story,string userId);
         Task<DBStatus> RemoveStoryAsync(Guid storyId,string userId);
     }
 }

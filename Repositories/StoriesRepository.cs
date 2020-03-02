@@ -20,9 +20,9 @@ namespace Blog_Rest_Api.Repositories{
             this.mapper = mapper;
         }
 
-        public async Task<DBStatus> AddStoryAsync(StoryDTO storyDTO,string userId)
+        public async Task<DBStatus> AddStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
-
+            
             Story story=new Story{
                 StoryId=storyDTO.StoryId,
                 Title=storyDTO.Title,
@@ -30,7 +30,6 @@ namespace Blog_Rest_Api.Repositories{
                 PublishedDate=storyDTO.PublishedDate,
                 AuthorId=userId
             };   
-
             blogContext.Stories.Add(story);
             var resultStatus=await blogContext.SaveChangesAsync();
             return resultStatus==0 ? DBStatus.Failed : DBStatus.Added;
@@ -81,7 +80,7 @@ namespace Blog_Rest_Api.Repositories{
                                             }).FirstOrDefaultAsync(story=>story.StoryId==storyId);
         }
 
-        public async Task<DBStatus> ReplaceStoryAsync(StoryDTO storyDTO,string userId)
+        public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
             Story persistentStory=await blogContext.Stories.FirstOrDefaultAsync(s=>s.StoryId==storyDTO.StoryId);
            
