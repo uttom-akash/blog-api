@@ -33,7 +33,7 @@ namespace Blog_Rest_Api.Services{
             DBStatus status=await authRepository.RegisterAsync(user);
             return status;
         }
-        public async Task<UserInfoDTO> LoginAsync(UserCredentialsDTO credentialsDTO)
+        public async Task<LoggedInUserDTO> LoginAsync(UserCredentialsDTO credentialsDTO)
         {
             string passwordHash=ConverterSuit.ByteArrayToHex(HashSuit.ComputeSha256(Encoding.UTF8.GetBytes(credentialsDTO.Password)));
             User user=await authRepository.LoginAsync(credentialsDTO.UserId,passwordHash);
@@ -41,11 +41,11 @@ namespace Blog_Rest_Api.Services{
             if(user==null)
                 return null;
 
-            UserInfoDTO userInfo=new UserInfoDTO{
+            LoggedInUserDTO userInfo=new LoggedInUserDTO{
                 UserId=user.UserId,
                 FirstName=user.FirstName,
                 LastName=user.LastName,
-                JwtToken=jwtSuit.GetToken(user.FirstName)
+                JwtToken=jwtSuit.GetToken(user)
             };
             return userInfo;
         }

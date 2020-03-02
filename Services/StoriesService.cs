@@ -20,34 +20,38 @@ namespace Blog_Rest_Api.Services{
             this.mapper = mapper;
         }
 
-        public async Task<DBStatus> CreateStoryAsync(StoryDTO storyDTO)
+        public async Task<DBStatus> CreateStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
-            DBStatus status=await storiesRepository.AddStoryAsync(storyDTO);
+            DBStatus status=await storiesRepository.AddStoryAsync(storyDTO,userId);
             return status;
         }
 
-        public async Task<List<StoryDTO>> GetStoryAsync()
+        public async Task<List<ResponseStoryDTO>> GetStoryAsync()
         {
-            List<Story> stories=await storiesRepository.GetStoryAsync();
-            List<StoryDTO> storyDTOs=stories.Select(story=>mapper.Map<StoryDTO>(story)).ToList();
-            return storyDTOs;
+            List<ResponseStoryDTO> stories=await storiesRepository.GetStoryAsync();
+            return stories;
         }
 
-        public async Task<StoryDTO> GetStoryAsync(Guid storyId)
+        public async Task<List<ResponseStoryDTO>> GetStoryAsync(int skip,int top)
         {
-            Story story=await storiesRepository.GetStoryAsync(storyId);
-            StoryDTO storyDTO=mapper.Map<StoryDTO>(story);
-            return storyDTO;
+            List<ResponseStoryDTO> stories=await storiesRepository.GetStoryAsync(skip,top);
+            return stories;
         }
 
-        public async Task<DBStatus> ReplaceStoryAsync(StoryDTO storyDTO)
+        public async Task<ResponseStoryDTO> GetStoryAsync(Guid storyId)
         {
-            DBStatus status=await storiesRepository.ReplaceStoryAsync(storyDTO);
+            ResponseStoryDTO story=await storiesRepository.GetStoryAsync(storyId);
+            return story;
+        }
+
+        public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)
+        {
+            DBStatus status=await storiesRepository.ReplaceStoryAsync(storyDTO,userId);
             return status;
         }
 
-        public async Task<DBStatus> RemoveStoryAsync(Guid storyId){
-            return await storiesRepository.RemoveStoryAsync(storyId);
+        public async Task<DBStatus> RemoveStoryAsync(Guid storyId,string userId){
+            return await storiesRepository.RemoveStoryAsync(storyId,userId);
         }
     }
 }

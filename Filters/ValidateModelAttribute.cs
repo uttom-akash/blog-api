@@ -9,9 +9,9 @@ namespace Blog_Rest_Api.Custom_Attribute{
         {
             if (!context.ModelState.IsValid)
             {
-            string errorMessage = string.Join(", ", context.ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
-            context.HttpContext.Response.StatusCode=StatusCodes.Status400BadRequest;
-            await context.HttpContext.Response.WriteAsync(errorMessage); 
+                string errorMessage = string.Join(", ", context.ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
+                context.HttpContext.Response.StatusCode=StatusCodes.Status400BadRequest;
+                await context.HttpContext.Response.WriteAsync(errorMessage); 
             }
         }
     }

@@ -18,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using AutoMapper;
 using Blog_Rest_Api.Auto_Mapper;
 using Blog_Rest_Api.Jwt;
+using Microsoft.AspNet.OData.Extensions;
 
 namespace Blog_Rest_Api
 {
@@ -41,7 +42,7 @@ namespace Blog_Rest_Api
             services.AddAutoMapper(typeof(AutoMapping));
             services.AddDbContext<BlogContext>();
             services.AddSwagger();
-            services.AddJwtBearer();
+            services.AddJwtBearer(Configuration);
             services.AddAuthorization();
             
 

@@ -7,7 +7,7 @@ namespace Blog_Rest_Api.Services{
     public interface IAuthService
     {
         Task<DBStatus> RegisterAsync(UserRegistrationDTO userRegistrationDTO);
-        Task<UserInfoDTO> LoginAsync(UserCredentialsDTO credentialsDTO);
+        Task<LoggedInUserDTO> LoginAsync(UserCredentialsDTO credentialsDTO);
         Task<bool> LogOutAsync();
     }
 }
