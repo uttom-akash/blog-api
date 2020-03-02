@@ -13,9 +13,9 @@ namespace Blog_Rest_Api.DTOModels{
         [MinLength(5)]
         [MaxLength(100)]
         public string FirstName {get;set;}
+        [RegularExpression(@"^[a-zA-Z]*$", ErrorMessage = "Characters should be Alphabate")]
         [MaxLength(100)]
         public string LastName {get;set;}
-        [MinLength(5)]
         [ValidatePassword(minLength=5,minAlphabet=2,minNumeric=1)]
         public string Password {get;set;} 
     }

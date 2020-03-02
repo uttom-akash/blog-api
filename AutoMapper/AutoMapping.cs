@@ -8,7 +8,11 @@ namespace Blog_Rest_Api.Auto_Mapper{
         public AutoMapping()
         {
             CreateMap<Story,RequestStoryDTO>();
+            CreateMap<Story,ResponseStoryDTO>();
             CreateMap<User,AuthorDTO>();
+            CreateMap<User,UserInfoDTO>();
+            CreateMap<User,LoggedInUserDTO>();
+            CreateMap<UserRegistrationDTO,User>();
         }
     }
 }

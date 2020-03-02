@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Blog_Rest_Api.Crypto;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Jwt;
@@ -13,23 +14,20 @@ namespace Blog_Rest_Api.Services{
     {
         private readonly IAuthRepository authRepository;
         private readonly JwtSuit jwtSuit;
+        private readonly IMapper mapper;
 
-        public AuthService(IAuthRepository authRepository,JwtSuit jwtSuit)
+        public AuthService(IAuthRepository authRepository,JwtSuit jwtSuit,IMapper mapper)
         {
             this.authRepository = authRepository;
             this.jwtSuit = jwtSuit;
+            this.mapper = mapper;
         }
 
         public async Task<DBStatus> RegisterAsync(UserRegistrationDTO userRegistrationDTO)
         {
             string passwordHash=ConverterSuit.ByteArrayToHex(HashSuit.ComputeSha256(Encoding.UTF8.GetBytes(userRegistrationDTO.Password)));
-            User user=new User{
-                UserId=userRegistrationDTO.UserId,
-                FirstName=userRegistrationDTO.FirstName,
-                LastName=userRegistrationDTO.LastName,
-                PasswordHash=passwordHash
-            };
-
+            User user=mapper.Map<User>(userRegistrationDTO);
+            user.PasswordHash=passwordHash;
             DBStatus status=await authRepository.RegisterAsync(user);
             return status;
         }
@@ -41,13 +39,9 @@ namespace Blog_Rest_Api.Services{
             if(user==null)
                 return null;
 
-            LoggedInUserDTO userInfo=new LoggedInUserDTO{
-                UserId=user.UserId,
-                FirstName=user.FirstName,
-                LastName=user.LastName,
-                JwtToken=jwtSuit.GetToken(user)
-            };
-            return userInfo;
+            LoggedInUserDTO loggedInUser =mapper.Map<LoggedInUserDTO>(user);
+            loggedInUser.JwtToken=jwtSuit.GetToken(user);
+            return loggedInUser;
         }
 
         public Task<bool> LogOutAsync()

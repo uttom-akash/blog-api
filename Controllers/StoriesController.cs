@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Blog_Rest_Api.Custom_Attribute;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Services;
 using Blog_Rest_Api.Utils;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,15 +26,12 @@ namespace Blog_Rest_Api.Controllers{
 
         [HttpPost("story")]
         [Authorize]
-        [ValidateModel]
         public async Task<IActionResult> CreateStory([FromBody]RequestStoryDTO storyDTO){
             string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
             DBStatus status=await storiesService.CreateStoryAsync(storyDTO,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
             if(status==DBStatus.Failed)
-                return BadRequest(responseStatusDTO);
-            else if(status==DBStatus.Forbidden)
-                return Forbid();    
+                return BadRequest(new BadResponseDTO{Status=(int)status,errors=new {message =new List<string>{status.ToString()}}});  
             else 
                 return Ok(responseStatusDTO);
         }
@@ -51,7 +45,6 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpGet("story/{storyId}")]
-        [ValidateModel]
         public async Task<IActionResult> GetStory([Required]Guid storyId){
             ResponseStoryDTO story=await storiesService.GetStoryAsync(storyId);
             if(story==null)
@@ -61,8 +54,8 @@ namespace Blog_Rest_Api.Controllers{
 
         [HttpPut("story")]
         [Authorize]
-        [ValidateModel]
         public async Task<IActionResult> UpdateStory([FromBody]RequestStoryDTO storyDTO){
+            Console.WriteLine("akash in");
             string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
             DBStatus status=await storiesService.ReplaceStoryAsync(storyDTO,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
@@ -71,14 +64,13 @@ namespace Blog_Rest_Api.Controllers{
             else if(status==DBStatus.Forbidden)
                 return Forbid();   
             else if(status==DBStatus.NotModified)
-                return BadRequest(responseStatusDTO);
+                return BadRequest(new BadResponseDTO{Status=(int)status,errors=new {message =new List<string>{status.ToString()}}}); 
             else 
                 return Ok(responseStatusDTO);
         }
 
         [HttpDelete("story/{storyId}")]
         [Authorize]
-        [ValidateModel]
         public async Task<IActionResult> RemoveStory([Required]Guid storyId){
             string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
             DBStatus status= await storiesService.RemoveStoryAsync(storyId,userId);
@@ -88,7 +80,7 @@ namespace Blog_Rest_Api.Controllers{
             else if(status==DBStatus.Forbidden)
                 return Forbid(); 
             else if(status==DBStatus.NotDeleted)
-                return BadRequest(responseStatusDTO);
+                return BadRequest(new BadResponseDTO{Status=(int)status,errors=new {message =new List<string>{status.ToString()}}}); 
             else 
                 return Ok(responseStatusDTO); 
         }

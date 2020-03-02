@@ -24,7 +24,6 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpPost("[action]")]
-        [ValidateModel]
         public async Task<IActionResult> Register([FromBody] UserRegistrationDTO userRegistrationDTO){
             DBStatus status=await authService.RegisterAsync(userRegistrationDTO);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
@@ -34,7 +33,6 @@ namespace Blog_Rest_Api.Controllers{
         }
 
         [HttpPost("[action]")]
-        [ValidateModel]
         public async Task<IActionResult> Login([FromBody] UserCredentialsDTO userCredentialsDTO){
             UserInfoDTO userInfoDTO =await authService.LoginAsync(userCredentialsDTO);
             if(userInfoDTO==null)

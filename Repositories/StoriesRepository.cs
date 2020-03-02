@@ -23,13 +23,9 @@ namespace Blog_Rest_Api.Repositories{
         public async Task<DBStatus> AddStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
             
-            Story story=new Story{
-                StoryId=storyDTO.StoryId,
-                Title=storyDTO.Title,
-                Body=storyDTO.Body,
-                PublishedDate=storyDTO.PublishedDate,
-                AuthorId=userId
-            };   
+
+            Story story=mapper.Map<Story>(storyDTO);
+            story.AuthorId=userId;
             blogContext.Stories.Add(story);
             var resultStatus=await blogContext.SaveChangesAsync();
             return resultStatus==0 ? DBStatus.Failed : DBStatus.Added;
@@ -40,13 +36,7 @@ namespace Blog_Rest_Api.Repositories{
             return await blogContext.Stories
                                     .Include(story=>story.Author)
                                     .AsNoTracking()
-                                    .Select(story=>new ResponseStoryDTO{
-                                        StoryId=story.StoryId,
-                                        Title=story.Title,
-                                        Body=story.Body,
-                                        PublishedDate=story.PublishedDate,
-                                        Author=new AuthorDTO{AuthorId=story.AuthorId,FirstName=story.Author.FirstName,LastName=story.Author.LastName}
-                                    })
+                                    .Select(story=>mapper.Map<ResponseStoryDTO>(story))
                                     .ToListAsync();
         }
 
@@ -57,13 +47,7 @@ namespace Blog_Rest_Api.Repositories{
                                     .AsNoTracking()
                                     .Skip(skip)
                                     .Take(top)
-                                    .Select(story=>new ResponseStoryDTO{
-                                        StoryId=story.StoryId,
-                                        Title=story.Title,
-                                        Body=story.Body,
-                                        PublishedDate=story.PublishedDate,
-                                        Author=new AuthorDTO{AuthorId=story.AuthorId,FirstName=story.Author.FirstName,LastName=story.Author.LastName}
-                                    })
+                                    .Select(story=>mapper.Map<ResponseStoryDTO>(story))
                                     .ToListAsync();
         }
 
@@ -71,13 +55,7 @@ namespace Blog_Rest_Api.Repositories{
         {
             return await blogContext.Stories.Include(story=>story.Author)
                                             .AsNoTracking()
-                                            .Select(story=>new ResponseStoryDTO{
-                                                StoryId=story.StoryId,
-                                                Title=story.Title,
-                                                Body=story.Body,
-                                                PublishedDate=story.PublishedDate,
-                                                 Author=new AuthorDTO{AuthorId=story.AuthorId,FirstName=story.Author.FirstName,LastName=story.Author.LastName}
-                                            }).FirstOrDefaultAsync(story=>story.StoryId==storyId);
+                                            .Select(story=>mapper.Map<ResponseStoryDTO>(story)).FirstOrDefaultAsync(story=>story.StoryId==storyId);
         }
 
         public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)
