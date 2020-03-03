@@ -4,7 +4,7 @@
 
 ## Additional Status
 
-
+* N.B. **This status will be in response body** 
 
 | Status Code | Meaning            |
 | ----------- | ------------------ |
@@ -64,6 +64,21 @@
 400 Bad Request
 ```
 
+##### Example
+
+*Request Body*
+
+```json
+{
+  "userId": "akaash",
+  "firstName": "uttom",
+  "lastName": "akash",
+  "password": "secret7"
+}
+```
+
+
+
 *Response Body* (200 Ok)
 
 ```json
@@ -94,6 +109,19 @@
 200 OK
 400 Bad Request 
 ```
+
+##### Example
+
+*Request Body*
+
+```json
+{
+  "userId": "akaash",
+  "password": "secret7"
+}
+```
+
+
 
 *Response Body* (200 Ok)
 
@@ -202,6 +230,19 @@ Authorization: Bearer <Token>
 200 OK
 ```
 
+
+
+##### Example
+
+*Request Body*
+
+```json
+{
+  "oldPassword": "secret7",
+  "newPassword": "secret78"
+}
+```
+
 *Response Body* (200 Ok)
 
 ```json
@@ -244,13 +285,25 @@ Authorization: Bearer <Token>
 }
 ```
 
-
-
-*Response Status*
+*Request Status*
 
 ```
 201 Created
 400 Bad Request
+```
+
+
+
+##### Example
+
+*Request Body*
+
+```json
+{
+	"title": "Lorem Ipsum",
+  	"body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+   "publishedDate": "2020-02-28"
+}
 ```
 
 *Response Header*
@@ -365,6 +418,23 @@ Authorization: Bearer <Token>
 400 Bad Request
 200 OK
 ```
+
+
+
+##### Example
+
+*Request Body*
+
+```json
+{
+    "storyId": "3fa85f64-5717-4562-b3fc-2c963f66ac12",
+    "title": "Lorem Ipsum",
+    "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "publishedDate": "2020-02-28T00:00:00"
+}
+```
+
+
 
 *Response Body* (200 Ok)
 
