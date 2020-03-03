@@ -30,7 +30,7 @@
 
 *Request Body*
 
-```json
+```
 {
     userId*					string
                             maxLength: 100
@@ -81,7 +81,7 @@
 
 *Request Body*
 
-```json
+```
 {
     userId*		string
     password*	string
