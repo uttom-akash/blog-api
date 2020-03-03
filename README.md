@@ -61,10 +61,10 @@
 
 *Response Status*
 
-```
-200 OK
-400 Bad Request
-```
+| Status Code | Message     |
+| ----------- | ----------- |
+| 200         | OK          |
+| 400         | Bad Request |
 
 ##### Example
 
@@ -107,10 +107,10 @@
 
 *Response Status*
 
-```
-200 OK
-400 Bad Request 
-```
+| Status Code | Message     |
+| ----------- | ----------- |
+| 200         | OK          |
+| 400         | Bad Request |
 
 ##### Example
 
@@ -148,11 +148,11 @@
 
 *Response Status*
 
-```
-200 OK
-404 Not Found
-400 Bad Request
-```
+| Status Code | Message     |
+| ----------- | ----------- |
+| 200         | OK          |
+| 400         | Bad Request |
+| 404         | Not Found   |
 
 *Response Body* (200 Ok)
 
@@ -176,9 +176,9 @@
 
 *Response Status*
 
-```
-200 OK
-```
+| Status Code | Message |
+| ----------- | ------- |
+| 200         | OK      |
 
 *Response Body* (200 Ok)
 
@@ -225,14 +225,12 @@ Authorization: Bearer <Token>
 
 *Response Status*
 
-```
-404 Not Found
-403 Forbidden
-400 Bad Request
-200 OK
-```
-
-
+| Status Code | Message     |
+| ----------- | ----------- |
+| 200         | OK          |
+| 400         | Bad Request |
+| 403         | Forbidden   |
+| 404         | Not Found   |
 
 ##### Example
 
@@ -289,10 +287,10 @@ Authorization: Bearer <Token>
 
 *Request Status*
 
-```
-201 Created
-400 Bad Request
-```
+| Status Code | Message     |
+| ----------- | ----------- |
+| 201         | Created     |
+| 400         | Bad Request |
 
 
 
@@ -322,13 +320,11 @@ Location : http://localhost:5000/v1/Stories/story/{storyId}
 
 *Response Status*
 
-```
-200 OK
-404 Not Found
-400 Bad Request
-```
-
-
+| Status Code | Message     |
+| ----------- | ----------- |
+| 200         | OK          |
+| 400         | Bad Request |
+| 404         | Not Found   |
 
 *Response Body* (200 Ok)
 
@@ -358,9 +354,9 @@ Location : http://localhost:5000/v1/Stories/story/{storyId}
 
 *Response Status*
 
-```
-200 OK
-```
+| Status Code | Message |
+| ----------- | ------- |
+| 200         | OK      |
 
 *Response Body* (200 Ok)
 
@@ -414,12 +410,12 @@ Authorization: Bearer <Token>
 ```
 *Response Status*
 
-```
-404 Not Found
-403 Forbidden
-400 Bad Request
-200 OK
-```
+| Status Code | Message     |
+| ----------- | ----------- |
+| 200         | OK          |
+| 400         | Bad Request |
+| 403         | Forbidden   |
+| 404         | Not Found   |
 
 
 
@@ -463,14 +459,16 @@ Authorization: Bearer <Token>
 
 *Response Status*
 
-```
-404 Not Found
-403 Forbidden
-400 Bad Request
-200 OK
-```
+| Status Code | Message     |
+| ----------- | ----------- |
+| 200         | OK          |
+| 400         | Bad Request |
+| 403         | Forbidden   |
+| 404         | Not Found   |
 
-*Response Body* (200 Ok)
+
+
+Response Body* (200 Ok)
 
 ```json
 {
