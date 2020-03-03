@@ -32,7 +32,7 @@
 
 ```
 {
-    userId*					string
+    userId*		    string
                             maxLength: 100
                             minLength: 5
                             pattern: ^[a-zA-Z0-9]*$
@@ -49,11 +49,11 @@
                             pattern: ^[a-zA-Z]*$
                             nullable: true
     
-    password*				string
-    						min alphabet: 2
-    						min numeric: 1
-    						min length: 5
-    						nullable: true
+    password*		    string
+			    min alphabet: 2
+			    min numeric: 1
+			    min length: 5
+			    nullable: true
 }
 ```
 
@@ -99,7 +99,7 @@
 ```
 {
     userId*		string
-    password*	string
+    password*		string
 }
 ```
 
@@ -214,10 +214,10 @@ Authorization: Bearer <Token>
 ```
 {
     oldPassword			string
-    					nullable: true
+    				nullable: true
     
     newPassword			string
-    					nullable: true
+    				nullable: true
 }
 ```
 
@@ -273,15 +273,15 @@ Authorization: Bearer <Token>
 	storyId				string($uuid)
 	
 	title*				string
-						maxLength: 250
-						minLength: 10
-						nullable: true
+					maxLength: 250
+					minLength: 10
+					nullable: true
 	
 	body*				string
-                        minLength: 100
-                        nullable: true
+                        		minLength: 100
+                        		nullable: true
 	
-	publishedDate*		string ($date)
+	publishedDate*			string ($date) : "2020-02-28" 
 }
 ```
 
@@ -399,15 +399,15 @@ Authorization: Bearer <Token>
 	storyId*			string($uuid)
 	
 	title*				string
-                        maxLength: 250
-                        minLength: 10
-                        nullable: true
+                        		maxLength: 250
+                        		minLength: 10
+                        		nullable: true
 
-    body*				string
-                        minLength: 100
-                        nullable: true
+    	body*				string
+                        		minLength: 100
+                        		nullable: true
 
-	publishedDate*		string($date)
+	publishedDate*			string($date)
 }
 ```
 *Response Status*
