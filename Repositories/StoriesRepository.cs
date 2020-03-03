@@ -22,23 +22,13 @@ namespace Blog_Rest_Api.Repositories{
 
         public async Task<DBStatus> AddStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
-            
-
             Story story=mapper.Map<Story>(storyDTO);
             story.AuthorId=userId;
             blogContext.Stories.Add(story);
             var resultStatus=await blogContext.SaveChangesAsync();
-            return resultStatus==0 ? DBStatus.Failed : DBStatus.Added;
+            return resultStatus==1 ? DBStatus.Added : DBStatus.Failed ;
         }
 
-        public async Task<List<ResponseStoryDTO>> GetStoryAsync()
-        {
-            return await blogContext.Stories
-                                    .Include(story=>story.Author)
-                                    .AsNoTracking()
-                                    .Select(story=>mapper.Map<ResponseStoryDTO>(story))
-                                    .ToListAsync();
-        }
 
         public async Task<List<ResponseStoryDTO>> GetStoryAsync(int skip,int top)
         {
@@ -53,9 +43,11 @@ namespace Blog_Rest_Api.Repositories{
 
         public async Task<ResponseStoryDTO> GetStoryAsync(Guid storyId)
         {
-            return await blogContext.Stories.Include(story=>story.Author)
+            Story story= await blogContext.Stories.Include(story=>story.Author)
                                             .AsNoTracking()
-                                            .Select(story=>mapper.Map<ResponseStoryDTO>(story)).FirstOrDefaultAsync(story=>story.StoryId==storyId);
+                                            .FirstOrDefaultAsync(story=>story.StoryId==storyId);
+            ResponseStoryDTO responseStoryDTO=mapper.Map<ResponseStoryDTO>(story);
+            return responseStoryDTO;
         }
 
         public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)

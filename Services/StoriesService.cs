@@ -26,12 +26,6 @@ namespace Blog_Rest_Api.Services{
             return status;
         }
 
-        public async Task<List<ResponseStoryDTO>> GetStoryAsync()
-        {
-            List<ResponseStoryDTO> stories=await storiesRepository.GetStoryAsync();
-            return stories;
-        }
-
         public async Task<List<ResponseStoryDTO>> GetStoryAsync(int skip,int top)
         {
             List<ResponseStoryDTO> stories=await storiesRepository.GetStoryAsync(skip,top);

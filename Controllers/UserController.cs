@@ -47,11 +47,11 @@ namespace Blog_Rest_Api.Controllers{
             DBStatus status=await userService.UpdateUserPasswordAsync(updateUserPasswordDTO);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
             if(status==DBStatus.NotFound)
-                return NotFound(responseStatusDTO);
+                return NotFound();
             else if(status==DBStatus.Forbidden)
                 return Forbid();   
             else if(status==DBStatus.NotModified)
-                return BadRequest(new BadResponseDTO{Status=(int)status,errors=new {message =new List<string>{status.ToString()}}}); 
+                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new {Message =new List<string>{status.ToString()}}}); 
             else 
                 return Ok(responseStatusDTO);
         }

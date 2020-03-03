@@ -7,6 +7,6 @@ namespace Blog_Rest_Api.DTOModels{
         public string Title {get;set;}
         public int Status {get;set;}
         public string TraceId {get;set;}
-        public object errors {get;set;}
+        public object Errors {get;set;}
     }
 }

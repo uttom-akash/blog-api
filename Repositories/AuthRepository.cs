@@ -16,6 +16,10 @@ namespace Blog_Rest_Api.Repositories{
 
         public async Task<DBStatus> RegisterAsync(User user)
         {
+            bool userIdTaken=await blogContext.Users.AnyAsync(x=>x.UserId==user.UserId);
+            if(userIdTaken)
+                return DBStatus.Taken;
+
             await blogContext.Users.AddAsync(user);
             var resultStatus=await blogContext.SaveChangesAsync();
             return resultStatus==1 ? DBStatus.Added : DBStatus.Failed;

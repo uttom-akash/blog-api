@@ -28,6 +28,8 @@ namespace Blog_Rest_Api.Repositories{
         {   
             return await blogContext.Users
                                     .AsNoTracking()
+                                    .Skip(skip)
+                                    .Take(top)
                                     .Select(user=>mapper.Map<UserInfoDTO>(user))
                                     .ToListAsync();
         }

@@ -10,7 +10,6 @@ namespace Blog_Rest_Api.DTOModels{
         public string Body {get;set;}
         [DataType(DataType.Date)]
         public DateTime PublishedDate {get;set;}
-        public string AuthorId {get;set;}
         public AuthorDTO Author {get;set;}
     }
 }
