@@ -2,6 +2,8 @@
 
 
 
+[TOC]
+
 ## Additional Status
 
 * N.B. **This status will be in response body** 
@@ -26,13 +28,13 @@
 
 ## Auth
 
-#### POST `/v1/Auth/Register`
+#### **POST** `/v1/Auth/Register`
 
-*Request Body*
+*Request Body Constraints*
 
-```
+```tiki wiki
 {
-    userId*		    string
+    userId*		    		string
                             maxLength: 100
                             minLength: 5
                             pattern: ^[a-zA-Z0-9]*$
@@ -49,11 +51,11 @@
                             pattern: ^[a-zA-Z]*$
                             nullable: true
     
-    password*		    string
-			    min alphabet: 2
-			    min numeric: 1
-			    min length: 5
-			    nullable: true
+    password*		    	string
+			    			min alphabet: 2
+			    			min numeric: 1
+			    			min length: 5
+			    			nullable: true
 }
 ```
 
@@ -92,13 +94,13 @@
 
 
 
-#### POST `/v1/Auth/Login`
+#### **POST** `/v1/Auth/Login`
 
-*Request Body*
+*Request Body Constraints*
 
-```
+```tiki wiki
 {
-    userId*		string
+    userId*			string
     password*		string
 }
 ```
@@ -209,15 +211,15 @@ Authorization: Bearer <Token>
 
 
 
-*Request Body* 
+*Request Body Constraints* 
 
-```
+```tiki wiki
 {
     oldPassword			string
-    				nullable: true
+    					nullable: true
     
     newPassword			string
-    				nullable: true
+    					nullable: true
 }
 ```
 
@@ -256,7 +258,7 @@ Authorization: Bearer <Token>
 
 ## Stories
 
-#### POST  `/v1/Stories/story`
+#### **POST**  `/v1/Stories/story`
 
 *Request Header*
 
@@ -268,20 +270,20 @@ Authorization: Bearer <Token>
 
 *Request Body*
 
-```
+```tiki wiki
 {
 	storyId				string($uuid)
 	
 	title*				string
-					maxLength: 250
-					minLength: 10
-					nullable: true
+						maxLength: 250
+						minLength: 10
+						nullable: true
 	
 	body*				string
-                        		minLength: 100
-                        		nullable: true
+                        minLength: 100
+                        nullable: true
 	
-	publishedDate*			string ($date) : "2020-02-28" 
+	publishedDate*		string ($date) : "2020-02-28" 
 }
 ```
 
@@ -316,7 +318,7 @@ Location : http://localhost:5000/v1/Stories/story/{storyId}
 
 
 
-#### GET  `/v1/Stories/story/{storyId}`
+#### **GET**  `/v1/Stories/story/{storyId}`
 
 *Response Status*
 
@@ -382,7 +384,7 @@ Location : http://localhost:5000/v1/Stories/story/{storyId}
 
 
 
-#### PUT `/v1/Stories/story`
+#### **PUT** `/v1/Stories/story`
 
 *Request Header*
 
@@ -392,20 +394,20 @@ Authorization: Bearer <Token>
 
 
 
-*Request Body*
+*Request Body Constraints*
 
-```
+```tiki wiki
 {
-	storyId*			string($uuid)
+	storyId*				string($uuid)
 	
-	title*				string
-                        		maxLength: 250
-                        		minLength: 10
-                        		nullable: true
+	title*					string
+                        	maxLength: 250
+                        	minLength: 10
+                        	nullable: true
 
-    	body*				string
-                        		minLength: 100
-                        		nullable: true
+    body*				    string
+                        	minLength: 100
+                        	nullable: true
 
 	publishedDate*			string($date)
 }
