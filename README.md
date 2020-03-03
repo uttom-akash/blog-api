@@ -66,7 +66,7 @@
 
 *Response Body* (200 Ok)
 
-```
+```json
 {
   "status": 0,
   "message": "Added"
@@ -227,7 +227,7 @@ Authorization: Bearer <Token>
 
 *Request Body*
 
-```json
+```
 {
 	storyId				string($uuid)
 	
@@ -341,7 +341,7 @@ Authorization: Bearer <Token>
 
 *Request Body*
 
-```json
+```
 {
 	storyId*			string($uuid)
 	
@@ -400,7 +400,7 @@ Authorization: Bearer <Token>
 
 *Response Body* (200 Ok)
 
-```
+```json
 {
     "status": 6,
     "message": "Deleted"
