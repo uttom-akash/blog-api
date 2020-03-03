@@ -1,6 +1,10 @@
-#                         Blog Rest Api
+#                         							Blog Rest Api
 
-####  Additional Status
+
+
+## Additional Status
+
+
 
 | Status Code | Meaning            |
 | ----------- | ------------------ |
@@ -15,6 +19,10 @@
 | 8           | Entity Taken       |
 
  
+
+
+
+
 
 ## Auth
 
@@ -100,6 +108,111 @@
 
 
 
+
+
+
+
+## Users
+
+#### **GET** `/v1/User/user/{userId}`
+
+*Response Status*
+
+```
+200 OK
+404 Not Found
+400 Bad Request
+```
+
+*Response Body* (200 Ok)
+
+```json
+{
+    "userId": "stringakash",
+    "firstName": "string",
+    "lastName": "string"
+}
+```
+
+
+
+
+
+#### **GET** `/v1/User/users/{skip}/{top}`
+
+* N.B. Here **skip** and **top** optional
+* skip=0 (*default value*)
+* top=50 (*default value*)
+
+*Response Status*
+
+```
+200 OK
+```
+
+*Response Body* (200 Ok)
+
+```json
+[
+    {
+        "userId": "strin11g",
+        "firstName": "string",
+        "lastName": "string"
+    },
+    {
+        "userId": "string",
+        "firstName": "string",
+        "lastName": "string"
+    }
+]
+```
+
+
+
+
+
+#### **PUT** `/v1/User/user`
+
+*Request Header*
+
+```
+Authorization: Bearer <Token>
+```
+
+
+
+*Request Body* 
+
+```
+{
+    oldPassword			string
+    					nullable: true
+    
+    newPassword			string
+    					nullable: true
+}
+```
+
+*Response Status*
+
+```
+404 Not Found
+403 Forbidden
+400 Bad Request
+200 OK
+```
+
+*Response Body* (200 Ok)
+
+```json
+{
+    "status": 4,
+    "message": "Modified"
+}
+```
+
+
+
 ## Stories
 
 #### POST  `/v1/Stories/story`
@@ -177,6 +290,8 @@ Location : http://localhost:5000/v1/Stories/story/{storyId}
     }
 }
 ```
+
+
 
 
 
@@ -262,6 +377,8 @@ Authorization: Bearer <Token>
 
 
 
+
+
 #### **DELETE**	`/v1/Stories/story/{storyId}`
 
 *Request Header*
@@ -289,102 +406,6 @@ Authorization: Bearer <Token>
     "message": "Deleted"
 }
 ```
-
-
-
-## Users
-
-#### **GET** `/v1/User/user/{userId}`
-
-*Response Status*
-
-```
-200 OK
-404 Not Found
-400 Bad Request
-```
-
-*Response Body* (200 Ok)
-
-```json
-{
-    "userId": "stringakash",
-    "firstName": "string",
-    "lastName": "string"
-}
-```
-
-#### **GET** `/v1/User/users/{skip}/{top}`
-
-* N.B. Here **skip** and **top** optional
-* skip=0 (*default value*)
-* top=50 (*default value*)
-
-*Response Status*
-
-```
-200 OK
-```
-
-*Response Body* (200 Ok)
-
-```json
-[
-    {
-        "userId": "strin11g",
-        "firstName": "string",
-        "lastName": "string"
-    },
-    {
-        "userId": "string",
-        "firstName": "string",
-        "lastName": "string"
-    }
-]
-```
-
-
-
-#### **PUT** `/v1/User/user`
-
-*Request Header*
-
-```
-Authorization: Bearer <Token>
-```
-
-
-
-*Request Body* 
-
-```
-{
-    oldPassword			string
-    					nullable: true
-    
-    newPassword			string
-    					nullable: true
-}
-```
-
-*Response Status*
-
-```
-404 Not Found
-403 Forbidden
-400 Bad Request
-200 OK
-```
-
-*Response Body* (200 Ok)
-
-```json
-{
-    "status": 4,
-    "message": "Modified"
-}
-```
-
 
 
 
