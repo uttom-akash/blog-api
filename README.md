@@ -1,5 +1,6 @@
 #                         							Blog Rest Api
 
+[postman api testing](https://www.getpostman.com/collections/ee757654ff612dea86d5)
 
 
 [TOC]
