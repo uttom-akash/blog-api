@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Services;
 using Blog_Rest_Api.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog_Rest_Api.Controllers{
@@ -40,7 +42,7 @@ namespace Blog_Rest_Api.Controllers{
         [HttpGet("stories/{skip}")]
         [HttpGet("stories/{skip}/{top}")]
         public async Task<IActionResult> GetStories(int skip=0,int top=50){
-            List<ResponseStoryDTO>  stories=await storiesService.GetStoryAsync(skip,top);
+            List<ResponseStoryDTO>  stories=await storiesService.GetStoriesAsync(skip,top);
             return Ok(stories);
         }
 
@@ -55,7 +57,6 @@ namespace Blog_Rest_Api.Controllers{
         [HttpPut("story")]
         [Authorize]
         public async Task<IActionResult> UpdateStory([FromBody]RequestStoryDTO storyDTO){
-            Console.WriteLine("akash in");
             string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
             DBStatus status=await storiesService.ReplaceStoryAsync(storyDTO,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
@@ -78,7 +79,7 @@ namespace Blog_Rest_Api.Controllers{
             if(status==DBStatus.NotFound)
                 return NotFound();
             else if(status==DBStatus.Forbidden)
-                return Forbid(); 
+                return StatusCode(StatusCodes.Status403Forbidden); 
             else if(status==DBStatus.NotDeleted)
                 return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new {Message =new List<string>{status.ToString()}}}); 
             else 

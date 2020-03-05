@@ -19,13 +19,15 @@ namespace Blog_Rest_Api.Repositories{
             this.mapper = mapper;
         }
 
-        public async Task<UserInfoDTO> GetUserAsync(string userId)
-        {   
-            User user =await blogContext.Users.FirstOrDefaultAsync(user=>user.UserId==userId);
+
+        public async Task<UserInfoDTO> GetAsync(string userId)
+        {
+            User user=await blogContext.Users.AsNoTracking().FirstOrDefaultAsync(user=>user.UserId==userId);
             return mapper.Map<UserInfoDTO>(user);
         }
-        public async Task<List<UserInfoDTO>> GetUsersAsync(int skip,int top)
-        {   
+
+        public async Task<List<UserInfoDTO>> GetAllAsync<UserInfoDTO>(int skip, int top)
+        {
             return await blogContext.Users
                                     .AsNoTracking()
                                     .Skip(skip)

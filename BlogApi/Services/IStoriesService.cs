@@ -5,13 +5,14 @@ using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Utils;
 
-namespace Blog_Rest_Api.Repositories{
-    interface IStoriesRepository
+namespace Blog_Rest_Api.Services{
+    public interface IStoriesService
     {
-        Task<DBStatus> AddStoryAsync(RequestStoryDTO story,string userId);
-        Task<List<ResponseStoryDTO>> GetStoryAsync(int skip,int top);
+        Task<DBStatus> CreateStoryAsync(RequestStoryDTO story,string userId);
+        Task<List<ResponseStoryDTO>> GetStoriesAsync(int skip,int top);
         Task<ResponseStoryDTO> GetStoryAsync(Guid storyId);
-        Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO story,string userId);
+        Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId);
         Task<DBStatus> RemoveStoryAsync(Guid storyId,string userId);
+
     }
 }

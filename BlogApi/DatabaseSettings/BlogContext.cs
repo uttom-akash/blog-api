@@ -21,9 +21,12 @@ namespace Blog_Rest_Api{
         public DbSet<User> Users {get;set;}
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
-                .UseSqlServer($"Data Source={databaseInfo.Value.Host};Initial Catalog={databaseInfo.Value.DatabaseName};Integrated Security=True")
-                .UseLoggerFactory(loggerFactory);
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder
+                    .UseSqlServer($"Data Source=localhost;Initial Catalog=BlogDB;Integrated Security=True")
+                    .UseLoggerFactory(loggerFactory);
+            }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder){
         }

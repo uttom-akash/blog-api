@@ -9,7 +9,7 @@ using Blog_Rest_Api.Repositories;
 using Blog_Rest_Api.Utils;
 
 namespace Blog_Rest_Api.Services{
-    class StoriesService:IStoriesService
+    public class StoriesService:IStoriesService
     {
         private readonly IStoriesRepository storiesRepository;
         private readonly IMapper mapper;
@@ -26,15 +26,15 @@ namespace Blog_Rest_Api.Services{
             return status;
         }
 
-        public async Task<List<ResponseStoryDTO>> GetStoryAsync(int skip,int top)
+        public async Task<List<ResponseStoryDTO>> GetStoriesAsync(int skip,int top)
         {
-            List<ResponseStoryDTO> stories=await storiesRepository.GetStoryAsync(skip,top);
+            List<ResponseStoryDTO> stories=await storiesRepository.GetAllAsync<ResponseStoryDTO>(skip,top);
             return stories;
         }
 
         public async Task<ResponseStoryDTO> GetStoryAsync(Guid storyId)
         {
-            ResponseStoryDTO story=await storiesRepository.GetStoryAsync(storyId);
+            ResponseStoryDTO story=mapper.Map<ResponseStoryDTO>(await storiesRepository.GetAsync(storyId));
             return story;
         }
 

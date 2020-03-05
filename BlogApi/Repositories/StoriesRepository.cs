@@ -9,7 +9,7 @@ using Blog_Rest_Api.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog_Rest_Api.Repositories{
-    class StoriesRepository : IStoriesRepository
+    public class StoriesRepository : IStoriesRepository
     {
         private BlogContext blogContext;
         private readonly IMapper mapper;
@@ -29,25 +29,25 @@ namespace Blog_Rest_Api.Repositories{
             return resultStatus==1 ? DBStatus.Added : DBStatus.Failed ;
         }
 
-
-        public async Task<List<ResponseStoryDTO>> GetStoryAsync(int skip,int top)
+       public async Task<List<ResponseStoryDTO>> GetAllAsync<ResponseStoryDTO>(int skip, int top)
         {
             return await blogContext.Stories
                                     .Include(story=>story.Author)
                                     .AsNoTracking()
+                                    .OrderByDescending(story=>story.PublishedDate)
                                     .Skip(skip)
                                     .Take(top)
                                     .Select(story=>mapper.Map<ResponseStoryDTO>(story))
                                     .ToListAsync();
         }
 
-        public async Task<ResponseStoryDTO> GetStoryAsync(Guid storyId)
+        public async Task<Story> GetAsync(Guid storyId)
         {
-            Story story= await blogContext.Stories.Include(story=>story.Author)
+            Story story=await blogContext.Stories.Include(story=>story.Author)
                                             .AsNoTracking()
-                                            .FirstOrDefaultAsync(story=>story.StoryId==storyId);
-            ResponseStoryDTO responseStoryDTO=mapper.Map<ResponseStoryDTO>(story);
-            return responseStoryDTO;
+                                            .FirstOrDefaultAsync(story=>story.StoryId.Equals(storyId));
+            
+            return story;
         }
 
         public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)
@@ -82,5 +82,6 @@ namespace Blog_Rest_Api.Repositories{
             return resultStatus==0 ? DBStatus.NotDeleted : DBStatus.Deleted ;
         }
 
+        
     }
 }

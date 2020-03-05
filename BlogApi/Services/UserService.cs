@@ -24,12 +24,12 @@ namespace Blog_Rest_Api.Services{
 
         public async Task<UserInfoDTO> GetUserAsync(string userId)
         {
-            return  await userRepository.GetUserAsync(userId);
+            return  await userRepository.GetAsync(userId);
         }
 
         public async Task<List<UserInfoDTO>> GetUsersAsync(int skip, int top)
         {
-            return await userRepository.GetUsersAsync(skip,top);
+            return await userRepository.GetAllAsync<UserInfoDTO>(skip,top);
         }
 
         public Task<DBStatus> UpdateUserPasswordAsync(UpdateUserPasswordDTO passwordDTO)
