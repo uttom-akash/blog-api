@@ -29,7 +29,7 @@ namespace Blog_Rest_Api.Repositories{
             return resultStatus==1 ? DBStatus.Added : DBStatus.Failed ;
         }
 
-       public async Task<List<ResponseStoryDTO>> GetAllAsync<ResponseStoryDTO>(int skip, int top)
+       public async Task<List<T>> GetAllAsync<T>(int skip, int top)
         {
             return await blogContext.Stories
                                     .Include(story=>story.Author)
@@ -37,7 +37,7 @@ namespace Blog_Rest_Api.Repositories{
                                     .OrderByDescending(story=>story.PublishedDate)
                                     .Skip(skip)
                                     .Take(top)
-                                    .Select(story=>mapper.Map<ResponseStoryDTO>(story))
+                                    .Select(story=>mapper.Map<T>(story))
                                     .ToListAsync();
         }
 
