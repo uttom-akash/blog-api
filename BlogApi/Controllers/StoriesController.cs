@@ -33,7 +33,7 @@ namespace Blog_Rest_Api.Controllers{
             DBStatus status=await storiesService.CreateStoryAsync(storyDTO,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
             if(status==DBStatus.Failed)
-                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new {Message =new List<string>{status.ToString()}}});  
+                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new Errors{Message =new List<string>{status.ToString()}}});  
             else 
                 return CreatedAtAction(nameof(GetStory),new {storyId=storyDTO.StoryId},null);
         }
@@ -66,7 +66,7 @@ namespace Blog_Rest_Api.Controllers{
             else if(status==DBStatus.Forbidden)
                 return Forbid();   
             else if(status==DBStatus.NotModified)
-                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new {Message =new List<string>{status.ToString()}}}); 
+                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new Errors{Message =new List<string>{status.ToString()}}}); 
             else 
                 return Ok(responseStatusDTO);
         }
@@ -82,7 +82,7 @@ namespace Blog_Rest_Api.Controllers{
             else if(status==DBStatus.Forbidden)
                 return StatusCode(StatusCodes.Status403Forbidden); 
             else if(status==DBStatus.NotDeleted)
-                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new {Message =new List<string>{status.ToString()}}}); 
+                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new Errors{Message=new List<string>{status.ToString()}}}); 
             else 
                 return Ok(responseStatusDTO); 
         }
