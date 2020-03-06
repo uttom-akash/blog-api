@@ -66,7 +66,7 @@ namespace BlogRestAPiTest.ServiceTesting
             storiesRepository.Setup(x => x.GetAllAsync<ResponseStoryDTO>(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(expectedStories);
 
             //Act
-            List<ResponseStoryDTO> actualStories =await storiesService.GetStoriesAsync(0, 50);
+            List<ResponseStoryDTO> actualStories =await storiesService.GetStoriesAsync("",0, 50);
 
             //Assert
             Assert.Equal(expectedStories.Count,actualStories.Count);

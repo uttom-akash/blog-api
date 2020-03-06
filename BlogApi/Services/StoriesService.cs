@@ -26,9 +26,14 @@ namespace Blog_Rest_Api.Services{
             return status;
         }
 
-        public async Task<List<ResponseStoryDTO>> GetStoriesAsync(int skip,int top)
+        public async Task<List<ResponseStoryDTO>> GetStoriesAsync(string query,int skip,int top)
         {
-            List<ResponseStoryDTO> stories=await storiesRepository.GetAllAsync<ResponseStoryDTO>(skip,top);
+            List<ResponseStoryDTO> stories=new List<ResponseStoryDTO>();
+            if(query.Length>0)
+                stories=await storiesRepository.SearchAsync(query,skip,top);
+            else
+                stories=await storiesRepository.GetAllAsync<ResponseStoryDTO>(skip,top);
+                
             return stories;
         }
 
@@ -36,12 +41,6 @@ namespace Blog_Rest_Api.Services{
         {
             ResponseStoryDTO story=mapper.Map<ResponseStoryDTO>(await storiesRepository.GetAsync(storyId));
             return story;
-        }
-
-        public async Task<List<ResponseStoryDTO>> SearchStoriesAsync(string content,int skip,int top)
-        {
-            List<ResponseStoryDTO> stories=await storiesRepository.SearchAsync(content,skip,top);
-            return stories;
         }
 
         public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)
