@@ -35,6 +35,7 @@ namespace Blog_Rest_Api
             services.AddSwagger();
             services.AddJwtBearer(Configuration);
             services.AddAuthorization();
+            services.AddCORS("MyPolicy");
             
 
             // Custom
@@ -55,11 +56,15 @@ namespace Blog_Rest_Api
                 app.UseDeveloperExceptionPage();
             }
 
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blog-Rest-Api"));
+            
+            app.UseCors("MyPolicy");
+
 
             app.UseRouting();
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
 
