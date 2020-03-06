@@ -379,6 +379,54 @@ Location : http://localhost:5000/v1/Stories/story/{storyId}
 
 
 
+#### Get  `/v1/Stories/search-stories/{content}/{skip}/{top}`
+
+* `content`  `( type : string ) ( Required )`
+
+* `skip`        `(type : integer) ( Optional ) ( Default : 0 )` 
+* `top`     `(type : integer) ( Optional ) ( Default : 50 )`
+
+##### Constraints
+
+* `Full Text Search` require `Sql Server` is Configured with `Stories Title` and `Stories Body`   Full text Search Indexing
+* *Default Behavior*  `Like` operator will do search 
+
+*Response Status*
+
+| Status Code | Message |
+| ----------- | ------- |
+| 200         | OK      |
+
+##### Example
+
+*Request* 
+
+```
+http://localhost:5000/v1/Stories/search-stories/lorem/0/1
+```
+
+
+
+*Response Body*
+
+```json
+[
+    {
+        "storyId": "e2435457-4145-425b-bc2a-0fe0bb19f55a",
+        "title": "Lorem Ipsum",
+        "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "publishedDate": "2020-02-29T00:00:00",
+        "author": {
+            "userId": "akash",
+            "firstName": "uttom",
+            "lastName": "akash"
+        }
+    }
+]
+```
+
+
+
 
 
 #### **PUT** `/v1/Stories/story`

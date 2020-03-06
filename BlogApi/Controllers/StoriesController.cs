@@ -46,6 +46,14 @@ namespace Blog_Rest_Api.Controllers{
             return Ok(stories);
         }
 
+        [HttpGet("search-stories/{content}")]
+        [HttpGet("search-stories/{content}/{skip}")]
+        [HttpGet("search-stories/{content}/{skip}/{top}")]
+        public async Task<IActionResult> SearchStories([Required] string content,int skip=0,int top=50){
+            List<ResponseStoryDTO>  stories=await storiesService.SearchStoriesAsync(content,skip,top);
+            return Ok(stories);
+        }
+
         [HttpGet("story/{storyId}")]
         public async Task<IActionResult> GetStory([Required]Guid storyId){
             ResponseStoryDTO story=await storiesService.GetStoryAsync(storyId);

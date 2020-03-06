@@ -38,6 +38,12 @@ namespace Blog_Rest_Api.Services{
             return story;
         }
 
+        public async Task<List<ResponseStoryDTO>> SearchStoriesAsync(string content,int skip,int top)
+        {
+            List<ResponseStoryDTO> stories=await storiesRepository.SearchAsync(content,skip,top);
+            return stories;
+        }
+
         public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
             DBStatus status=await storiesRepository.ReplaceStoryAsync(storyDTO,userId);

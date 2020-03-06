@@ -50,6 +50,36 @@ namespace Blog_Rest_Api.Repositories{
             return story;
         }
 
+        public async Task<List<ResponseStoryDTO>> SearchAsync(string content,int skip, int top)
+        {
+            //If Sql Server is not configured with full text search
+            //Then Query throws error
+            //Then Execute query in catch block
+            try
+            {
+                return await blogContext.Stories.Where(story=>EF.Functions.FreeText(story.Title,content) || EF.Functions.FreeText(story.Body,content))
+                                                .Include(story=>story.Author)
+                                                .AsNoTracking()
+                                                .OrderByDescending(story=>story.PublishedDate)
+                                                .Skip(skip)
+                                                .Take(top)
+                                                .Select(story=>mapper.Map<ResponseStoryDTO>(story))
+                                                .ToListAsync();   
+            }
+            catch (System.Exception)
+            {
+                
+                return await blogContext.Stories.Where(story=>EF.Functions.Like(story.Title,$"_%{content}_%") || EF.Functions.Like(story.Body,$"_%{content}_%"))
+                                                .Include(story=>story.Author)
+                                                .AsNoTracking()
+                                                .OrderByDescending(story=>story.PublishedDate)
+                                                .Skip(skip)
+                                                .Take(top)
+                                                .Select(story=>mapper.Map<ResponseStoryDTO>(story))
+                                                .ToListAsync();
+            }
+        }
+
         public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
             Story persistentStory=await blogContext.Stories.FirstOrDefaultAsync(s=>s.StoryId==storyDTO.StoryId);
