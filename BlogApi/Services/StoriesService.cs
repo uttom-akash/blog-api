@@ -26,9 +26,14 @@ namespace Blog_Rest_Api.Services{
             return status;
         }
 
-        public async Task<List<ResponseStoryDTO>> GetStoriesAsync(int skip,int top)
+        public async Task<List<ResponseStoryDTO>> GetStoriesAsync(string query,int skip,int top)
         {
-            List<ResponseStoryDTO> stories=await storiesRepository.GetAllAsync<ResponseStoryDTO>(skip,top);
+            List<ResponseStoryDTO> stories=new List<ResponseStoryDTO>();
+            if(query.Length>0)
+                stories=await storiesRepository.SearchAsync(query,skip,top);
+            else
+                stories=await storiesRepository.GetAllAsync<ResponseStoryDTO>(skip,top);
+                
             return stories;
         }
 

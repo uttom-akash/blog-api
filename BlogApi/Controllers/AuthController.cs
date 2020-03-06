@@ -29,9 +29,9 @@ namespace Blog_Rest_Api.Controllers{
             DBStatus status=await authService.RegisterAsync(userRegistrationDTO);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
             if(status==DBStatus.Failed)
-                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new {Message =new List<string>{status.ToString()}}});
+                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new Errors{Message =new List<string>{status.ToString()}}});
             else if(status==DBStatus.Taken)
-                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new {UserId =new List<string>{"UserId is already taken"}}});
+                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new Errors{Message =new List<string>{"UserId is already taken"}}});
             return  Ok(responseStatusDTO);
         }
 
@@ -39,7 +39,7 @@ namespace Blog_Rest_Api.Controllers{
         public async Task<IActionResult> Login([FromBody] UserCredentialsDTO userCredentialsDTO){
             UserInfoDTO userInfoDTO =await authService.LoginAsync(userCredentialsDTO);
             if(userInfoDTO==null)
-                return BadRequest(new BadResponseDTO{Status=400,Errors=new {Message =new List<string>{"Credentials are wrong"}}});
+                return BadRequest(new BadResponseDTO{Status=400,Errors=new Errors{Message =new List<string>{"Credentials are wrong"}}});
             return Ok(userInfoDTO);
         }
 

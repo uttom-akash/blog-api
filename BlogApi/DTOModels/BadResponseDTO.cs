@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Blog_Rest_Api.DTOModels{
@@ -7,6 +8,11 @@ namespace Blog_Rest_Api.DTOModels{
         public string Title {get;set;}
         public int Status {get;set;}
         public string TraceId {get;set;}
-        public object Errors {get;set;}
+        public Errors Errors {get;set;}
+    }
+
+    public class Errors
+    {
+        public  List<string> Message {get;set;}        
     }
 }

@@ -29,7 +29,7 @@ namespace Blog_Rest_Api.Repositories{
             return resultStatus==1 ? DBStatus.Added : DBStatus.Failed ;
         }
 
-       public async Task<List<ResponseStoryDTO>> GetAllAsync<ResponseStoryDTO>(int skip, int top)
+       public async Task<List<T>> GetAllAsync<T>(int skip, int top)
         {
             return await blogContext.Stories
                                     .Include(story=>story.Author)
@@ -37,7 +37,7 @@ namespace Blog_Rest_Api.Repositories{
                                     .OrderByDescending(story=>story.PublishedDate)
                                     .Skip(skip)
                                     .Take(top)
-                                    .Select(story=>mapper.Map<ResponseStoryDTO>(story))
+                                    .Select(story=>mapper.Map<T>(story))
                                     .ToListAsync();
         }
 
@@ -48,6 +48,36 @@ namespace Blog_Rest_Api.Repositories{
                                             .FirstOrDefaultAsync(story=>story.StoryId.Equals(storyId));
             
             return story;
+        }
+
+        public async Task<List<ResponseStoryDTO>> SearchAsync(string content,int skip, int top)
+        {
+            //If Sql Server is not configured with full text search
+            //Then Query throws error
+            //Then Execute query in catch block
+            try
+            {
+                return await blogContext.Stories.Where(story=>EF.Functions.FreeText(story.Title,content) || EF.Functions.FreeText(story.Body,content))
+                                                .Include(story=>story.Author)
+                                                .AsNoTracking()
+                                                .OrderByDescending(story=>story.PublishedDate)
+                                                .Skip(skip)
+                                                .Take(top)
+                                                .Select(story=>mapper.Map<ResponseStoryDTO>(story))
+                                                .ToListAsync();   
+            }
+            catch (System.Exception)
+            {
+                
+                return await blogContext.Stories.Where(story=>EF.Functions.Like(story.Title,$"_%{content}_%") || EF.Functions.Like(story.Body,$"_%{content}_%"))
+                                                .Include(story=>story.Author)
+                                                .AsNoTracking()
+                                                .OrderByDescending(story=>story.PublishedDate)
+                                                .Skip(skip)
+                                                .Take(top)
+                                                .Select(story=>mapper.Map<ResponseStoryDTO>(story))
+                                                .ToListAsync();
+            }
         }
 
         public async Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO storyDTO,string userId)

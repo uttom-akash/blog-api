@@ -111,7 +111,7 @@ namespace BlogRestAPiTest.ControllerTesting
             int expectedLength = 1;
             List<ResponseStoryDTO> storyDTOs = new List<ResponseStoryDTO> { new ResponseStoryDTO {Title= expectedTitle } };
 
-            storiesService.Setup(x => x.GetStoriesAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(storyDTOs);
+            storiesService.Setup(x => x.GetStoriesAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(storyDTOs);
             
             //Act
             var result=await storiesController.GetStories() as OkObjectResult;
