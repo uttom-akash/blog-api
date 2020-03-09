@@ -37,6 +37,11 @@ namespace Blog_Rest_Api.Services{
             return stories;
         }
 
+         public Task<List<ResponseStoryDTO>> GeUserStoriesAsync(string userId, int skip, int top)
+        {
+           return storiesRepository.GetUserStoriesAsync(userId,skip,top);
+        }
+
         public async Task<ResponseStoryDTO> GetStoryAsync(Guid storyId)
         {
             ResponseStoryDTO story=mapper.Map<ResponseStoryDTO>(await storiesRepository.GetAsync(storyId));
@@ -52,5 +57,7 @@ namespace Blog_Rest_Api.Services{
         public async Task<DBStatus> RemoveStoryAsync(Guid storyId,string userId){
             return await storiesRepository.RemoveStoryAsync(storyId,userId);
         }
+
+       
     }
 }

@@ -10,6 +10,8 @@ namespace Blog_Rest_Api.Repositories{
     {
         Task<DBStatus> AddStoryAsync(RequestStoryDTO story,string userId);
         Task<List<ResponseStoryDTO>> SearchAsync(string content,int skip, int top);
+        Task<List<ResponseStoryDTO>> GetUserStoriesAsync(string userId,int skip, int top);
+        
         Task<Story> GetAsync(Guid id);
         Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO story,string userId);
         Task<DBStatus> RemoveStoryAsync(Guid storyId,string userId);

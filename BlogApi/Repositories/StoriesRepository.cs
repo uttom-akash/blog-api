@@ -41,6 +41,19 @@ namespace Blog_Rest_Api.Repositories{
                                     .ToListAsync();
         }
 
+        public async Task<List<ResponseStoryDTO>> GetUserStoriesAsync(string userId, int skip, int top)
+        {
+            return await blogContext.Stories
+                                    .AsNoTracking()
+                                    .Where(story=>story.AuthorId==userId)
+                                    .Include(story=>story.Author)
+                                    .OrderByDescending(story=>story.PublishedDate)
+                                    .Skip(skip)
+                                    .Take(top)
+                                    .Select(story=>mapper.Map<ResponseStoryDTO>(story))
+                                    .ToListAsync();
+        }
+
         public async Task<Story> GetAsync(Guid storyId)
         {
             Story story=await blogContext.Stories.Include(story=>story.Author)

@@ -60,11 +60,11 @@ namespace Blog_Rest_Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blog-Rest-Api"));
             
-            app.UseCors("MyPolicy");
 
 
             app.UseRouting();
 
+            app.UseCors("MyPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 
