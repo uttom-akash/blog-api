@@ -46,6 +46,14 @@ namespace Blog_Rest_Api.Controllers{
             return Ok(stories);
         }
 
+        [HttpGet("user-stories/{userId}")]
+        [HttpGet("user-stories/{userId}/{skip}")]
+        [HttpGet("user-stories/{userId}/{skip}/{top}")]
+        public async Task<IActionResult> GetUserStories([Required]string userId="",int skip=0,int top=50){
+            List<ResponseStoryDTO>  stories=await storiesService.GeUserStoriesAsync(userId,skip,top);
+            return Ok(stories);
+        }
+
 
         [HttpGet("story/{storyId}")]
         public async Task<IActionResult> GetStory([Required]Guid storyId){

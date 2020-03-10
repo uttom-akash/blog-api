@@ -43,5 +43,15 @@ namespace Blog_Rest_Api{
             });
 
         }
+
+        public static void AddCORS(this IServiceCollection services,string policy){
+            services.AddCors(o => o.AddPolicy(policy, builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                }));
+        }
     }
 }
