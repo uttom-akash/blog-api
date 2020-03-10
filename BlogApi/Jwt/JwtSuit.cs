@@ -19,7 +19,7 @@ namespace Blog_Rest_Api.Jwt{
         public string GetToken(User user){
            
             var securityKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtInfo.Value.Key));
-            var claims=new List<Claim>{new Claim(ClaimTypes.Sid,user.UserId),new Claim("Dev","akash")};  
+            var claims=new List<Claim>{new Claim(ClaimTypes.Sid,user.UserId),new Claim(ClaimTypes.Name,user.FirstName+" "+user.LastName),new Claim("Dev","akash")};  
             
             var securityToken=new JwtSecurityToken(
                 issuer:jwtInfo.Value.ValidIssuer,
