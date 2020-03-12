@@ -7,6 +7,7 @@ using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Repositories;
 using Blog_Rest_Api.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog_Rest_Api.Services{
     public class StoriesService:IStoriesService
@@ -22,24 +23,37 @@ namespace Blog_Rest_Api.Services{
 
         public async Task<DBStatus> CreateStoryAsync(RequestStoryDTO storyDTO,string userId)
         {
-            DBStatus status=await storiesRepository.AddStoryAsync(storyDTO,userId);
+            Story story=mapper.Map<Story>(storyDTO);
+            story.AuthorId=userId;
+            DBStatus status=await storiesRepository.AddStoryAsync(story);
             return status;
         }
 
-        public async Task<List<ResponseStoryDTO>> GetStoriesAsync(string query,int skip,int top)
+        public async Task<StoriesWithCountDTO> GetStoriesAsync(string query,int skip,int top)
         {
-            List<ResponseStoryDTO> stories=new List<ResponseStoryDTO>();
-            if(query.Length>0)
-                stories=await storiesRepository.SearchAsync(query,skip,top);
+            IQueryable<Story> stories=null;
+            int total=0;
+            if(query!=null && query.Length>0)
+                {
+                    var   storiesObject=await storiesRepository.SearchAsync(query,skip,top);
+                    stories=storiesObject.Value;
+                    total=storiesObject.Key;
+                }
             else
-                stories=await storiesRepository.GetAllAsync<ResponseStoryDTO>(skip,top);
-                
-            return stories;
+                {
+                    var  storiesObject=await storiesRepository.GetAllAsync(skip,top);
+                    stories=storiesObject.Value;
+                    total=storiesObject.Key;
+                }
+            StoriesWithCountDTO storiesWithCountDTO=new StoriesWithCountDTO();
+            storiesWithCountDTO.Total=total;
+            storiesWithCountDTO.Stories=await stories.Select(story=>mapper.Map<ResponseStoryDTO>(story)).ToListAsync();    
+            return storiesWithCountDTO;
         }
 
          public Task<List<ResponseStoryDTO>> GeUserStoriesAsync(string userId, int skip, int top)
         {
-           return storiesRepository.GetUserStoriesAsync(userId,skip,top);
+           return storiesRepository.GetUserStoriesAsync(userId,skip,top).Select(story=>mapper.Map<ResponseStoryDTO>(story)).ToListAsync();
         }
 
         public async Task<ResponseStoryDTO> GetStoryAsync(Guid storyId)

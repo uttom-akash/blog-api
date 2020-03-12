@@ -35,8 +35,7 @@ namespace BlogRestAPiTest.RepositoryTesting
         {
             
             dbContext = CreateDBContext();
-            mapper = new Mock<IMapper>();
-            storiesRepository = new StoriesRepository(dbContext,mapper.Object);
+            storiesRepository = new StoriesRepository(dbContext);
 
             //arrange
             expectedStoryId = Guid.NewGuid();
@@ -66,12 +65,11 @@ namespace BlogRestAPiTest.RepositoryTesting
         {
             //Arrange 
             DBStatus expectedStatus = DBStatus.Added;
-            mapper.Setup(m => m.Map<Story>(It.IsAny<RequestStoryDTO>())).Returns(expectedStory);
             dbContext.Users.Add(expectedUser);
             dbContext.SaveChanges();
 
             //Act
-            DBStatus actualStatus =await storiesRepository.AddStoryAsync(expectedRequestStoryDTO,"akash");
+            DBStatus actualStatus =await storiesRepository.AddStoryAsync(expectedStory);
             
             //Assert
             Assert.Equal(expectedStatus, actualStatus);

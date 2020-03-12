@@ -11,29 +11,24 @@ namespace Blog_Rest_Api.Repositories{
     public class UserRepository : IUserRepository
     {
         private readonly BlogContext blogContext;
-        private readonly IMapper mapper;
-
-        public UserRepository(BlogContext blogContext,IMapper mapper)
+        public UserRepository(BlogContext blogContext)
         {
            this.blogContext=blogContext;
-            this.mapper = mapper;
         }
 
 
-        public async Task<UserInfoDTO> GetAsync(string userId)
+        public async Task<User> GetAsync(string userId)
         {
             User user=await blogContext.Users.AsNoTracking().FirstOrDefaultAsync(user=>user.UserId==userId);
-            return mapper.Map<UserInfoDTO>(user);
+            return user;
         }
 
-        public async Task<List<UserInfoDTO>> GetAllAsync<UserInfoDTO>(int skip, int top)
+        public IQueryable<User> GetAllAsync(int skip, int top)
         {
-            return await blogContext.Users
+            return  blogContext.Users
                                     .AsNoTracking()
                                     .Skip(skip)
-                                    .Take(top)
-                                    .Select(user=>mapper.Map<UserInfoDTO>(user))
-                                    .ToListAsync();
+                                    .Take(top).AsQueryable();
         }
 
         public async Task<DBStatus> UpdateUserPasswordAsync(UpdateUserPasswordDTO passwordDTO)
