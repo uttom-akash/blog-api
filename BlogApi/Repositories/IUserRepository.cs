@@ -1,13 +1,15 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Utils;
 
 namespace Blog_Rest_Api.Repositories{
-    public interface IUserRepository:IBaseRepository
+    public interface IUserRepository
     {
-        Task<UserInfoDTO> GetAsync(string userId);
+        Task<User> GetAsync(string userId);
+        IQueryable<User> GetAllAsync(int skip,int top);
         Task<DBStatus> UpdateUserPasswordAsync(UpdateUserPasswordDTO passwordDTO);
     }
 }

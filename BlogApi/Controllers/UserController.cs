@@ -51,7 +51,7 @@ namespace Blog_Rest_Api.Controllers{
             else if(status==DBStatus.Forbidden)
                 return Forbid();   
             else if(status==DBStatus.NotModified)
-                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new Errors{Message =new List<string>{status.ToString()}}}); 
+                return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new Errors{Message =new List<string>{status.ToString()}}});
             else 
                 return Ok(responseStatusDTO);
         }

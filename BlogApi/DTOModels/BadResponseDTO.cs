@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Blog_Rest_Api.DTOModels{
     public class BadResponseDTO{
@@ -11,8 +12,7 @@ namespace Blog_Rest_Api.DTOModels{
         public Errors Errors {get;set;}
     }
 
-    public class Errors
-    {
-        public  List<string> Message {get;set;}        
-    }
+     public class Errors{
+        public List<string> Message {get;set;}
+     }
 }

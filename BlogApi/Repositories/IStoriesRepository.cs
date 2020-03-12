@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Utils;
 
 namespace Blog_Rest_Api.Repositories{
-    public interface IStoriesRepository:IBaseRepository
+    public interface IStoriesRepository
     {
-        Task<DBStatus> AddStoryAsync(RequestStoryDTO story,string userId);
-        Task<List<ResponseStoryDTO>> SearchAsync(string content,int skip, int top);
-        Task<List<ResponseStoryDTO>> GetUserStoriesAsync(string userId,int skip, int top);
+        Task<DBStatus> AddStoryAsync(Story story);
+        Task<KeyValuePair<int,IQueryable<Story>>> SearchAsync(string content,int skip, int top);
+        Task<KeyValuePair<int,IQueryable<Story>>> GetAllAsync(int skip,int top);
+        IQueryable<Story> GetUserStoriesAsync(string userId,int skip, int top);
         
         Task<Story> GetAsync(Guid id);
         Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO story,string userId);

@@ -9,6 +9,7 @@ using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Repositories;
 using Blog_Rest_Api.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog_Rest_Api.Services{
     class UserService:IUserService
@@ -24,12 +25,14 @@ namespace Blog_Rest_Api.Services{
 
         public async Task<UserInfoDTO> GetUserAsync(string userId)
         {
-            return  await userRepository.GetAsync(userId);
+            User user=await userRepository.GetAsync(userId);
+            return mapper.Map<UserInfoDTO>(user);
         }
 
         public async Task<List<UserInfoDTO>> GetUsersAsync(int skip, int top)
         {
-            return await userRepository.GetAllAsync<UserInfoDTO>(skip,top);
+           IQueryable<User> users=userRepository.GetAllAsync(skip,top);
+           return await users.Select(user=>mapper.Map<UserInfoDTO>(user)).ToListAsync();
         }
 
         public Task<DBStatus> UpdateUserPasswordAsync(UpdateUserPasswordDTO passwordDTO)

@@ -109,19 +109,22 @@ namespace BlogRestAPiTest.ControllerTesting
             //Arrange
             string expectedTitle = "LoremIpsum";
             int expectedLength = 1;
+            StoriesWithCountDTO storiesWithCountDTO = new StoriesWithCountDTO();
             List<ResponseStoryDTO> storyDTOs = new List<ResponseStoryDTO> { new ResponseStoryDTO {Title= expectedTitle } };
+            storiesWithCountDTO.Stories = storyDTOs;
+            storiesWithCountDTO.Total = 1;
 
-            storiesService.Setup(x => x.GetStoriesAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(storyDTOs);
+            storiesService.Setup(x => x.GetStoriesAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(storiesWithCountDTO);
             
             //Act
             var result=await storiesController.GetStories() as OkObjectResult;
-            var actualStories = result.Value as List<ResponseStoryDTO>;
+            var actualStories = result.Value as StoriesWithCountDTO;
            
             //Assert
             Assert.NotNull(actualStories);
             Assert.Equal(200,result.StatusCode);
-            Assert.Equal(expectedLength, actualStories.Count);
-            Assert.Equal(storyDTOs,actualStories);
+            Assert.Equal(expectedLength, actualStories.Total);
+            Assert.Equal(storiesWithCountDTO,actualStories);
 
         }
 
