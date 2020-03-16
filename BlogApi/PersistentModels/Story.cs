@@ -13,10 +13,16 @@ namespace Blog_Rest_Api.Persistent_Model{
         
         [DataType(DataType.Date)]
         public DateTime PublishedDate {get;set;}
+
+        public DateTime LastModified {get;set;}
         
         public User Author {get;set;}
         
         [ForeignKey("Author")]
-        public string AuthorId {get;set;}        
+        public string AuthorId {get;set;}   
+
+        public override string ToString(){
+            return LastModified.ToString();
+        }     
     }
 }

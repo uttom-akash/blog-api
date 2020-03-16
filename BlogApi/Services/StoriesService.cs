@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Blog_Rest_Api.Crypto;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Repositories;
@@ -51,9 +53,26 @@ namespace Blog_Rest_Api.Services{
             return storiesWithCountDTO;
         }
 
-         public Task<List<ResponseStoryDTO>> GeUserStoriesAsync(string userId, int skip, int top)
+         public async Task<StoriesWithCountDTO> GeUserStoriesAsync(string userId,string query,int skip, int top)
         {
-           return storiesRepository.GetUserStoriesAsync(userId,skip,top).Select(story=>mapper.Map<ResponseStoryDTO>(story)).ToListAsync();
+            IQueryable<Story> stories=null;
+            int total=0;
+            if(query!=null && query.Length>0)
+                {
+                    var   storiesObject=await storiesRepository.SearchUserStoriesAsync(userId,query,skip,top);
+                    stories=storiesObject.Value;
+                    total=storiesObject.Key;
+                }
+            else
+                {
+                    var  storiesObject=await storiesRepository.GetUserStoriesAsync(userId,skip,top);
+                    stories=storiesObject.Value;
+                    total=storiesObject.Key;
+                }
+            StoriesWithCountDTO storiesWithCountDTO=new StoriesWithCountDTO();
+            storiesWithCountDTO.Total=total;
+            storiesWithCountDTO.Stories=await stories.Select(story=>mapper.Map<ResponseStoryDTO>(story)).ToListAsync();    
+            return storiesWithCountDTO;
         }
 
         public async Task<ResponseStoryDTO> GetStoryAsync(Guid storyId)

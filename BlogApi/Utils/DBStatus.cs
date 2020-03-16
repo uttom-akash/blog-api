@@ -10,6 +10,7 @@ namespace Blog_Rest_Api.Utils
         NotDeleted=5,
         Deleted=6,
         Forbidden=7,
-        Taken=8
+        Taken=8,
+        PreconditionFailed = 10
     }
 }

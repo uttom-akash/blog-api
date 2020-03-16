@@ -11,8 +11,9 @@ namespace Blog_Rest_Api.Repositories{
     {
         Task<DBStatus> AddStoryAsync(Story story);
         Task<KeyValuePair<int,IQueryable<Story>>> SearchAsync(string content,int skip, int top);
+        Task<KeyValuePair<int,IQueryable<Story>>> SearchUserStoriesAsync(string userId,string content,int skip, int top);
         Task<KeyValuePair<int,IQueryable<Story>>> GetAllAsync(int skip,int top);
-        IQueryable<Story> GetUserStoriesAsync(string userId,int skip, int top);
+        Task<KeyValuePair<int,IQueryable<Story>>> GetUserStoriesAsync(string userId,int skip, int top);
         
         Task<Story> GetAsync(Guid id);
         Task<DBStatus> ReplaceStoryAsync(RequestStoryDTO story,string userId);

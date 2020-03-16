@@ -92,6 +92,7 @@ namespace BlogRestAPiTest.ServiceTesting
         public async Task TestReplaceStoryNotModified()
         {
             //Arrange
+            string etag = "";
             string userId = "akash";
             RequestStoryDTO storyDTO = It.IsAny<RequestStoryDTO>();
             DBStatus expectedStatus = DBStatus.NotModified;
@@ -108,10 +109,12 @@ namespace BlogRestAPiTest.ServiceTesting
         public async Task TestReplaceStoryModified()
         {
             //Arrange
+            string etag = "";
             string userId = "akash";
             DBStatus expectedStatus = DBStatus.Modified;
             RequestStoryDTO storyDTO = It.IsAny<RequestStoryDTO>();
             storiesRepository.Setup(x => x.ReplaceStoryAsync(storyDTO, userId)).ReturnsAsync(expectedStatus);
+
 
             //Act
             DBStatus actualStatus = await storiesService.ReplaceStoryAsync(storyDTO, userId);
