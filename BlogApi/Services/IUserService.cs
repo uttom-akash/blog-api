@@ -7,7 +7,7 @@ namespace Blog_Rest_Api.Services
 {
     public interface IUserService
     {
-        Task<List<UserInfoDTO>> GetUsersAsync(int skip,int top);
+        Task<IEnumerable<UserInfoDTO>> GetUsersAsync(int skip, int top);
         Task<UserInfoDTO> GetUserAsync(string userId);
         Task<DBStatus> UpdateUserPasswordAsync(UpdateUserPasswordDTO passwordDTO);
     }
