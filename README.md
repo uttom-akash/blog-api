@@ -1,9 +1,24 @@
 #                         							Blog Rest Api
 
+
+
+## Instruction
+
+* clone the project and go to the `BlogApi` folder in root folder
+
+* `dotnet restore`
+
+* `dotnet ef database update` (`N.B. must need SQL Server and entity framework tools support`)
+
+* `dotnet run`
+
+  
+
+## Postman
+
 [postman api testing](https://www.getpostman.com/collections/ee757654ff612dea86d5)
 
 
-[TOC]
 
 ## Additional Status
 
