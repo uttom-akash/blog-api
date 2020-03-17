@@ -29,7 +29,7 @@ namespace Blog_Rest_Api.Services
             return mapper.Map<UserInfoDTO>(user);
         }
 
-        public async Task<IEnumerable<UserInfoDTO>> GetUsersAsync(int skip, int top)
+        public IEnumerable<UserInfoDTO> GetUsers(int skip, int top)
         {
             IEnumerable<User> users = userRepository.GetAllAsync(skip, top);
             return users.Select(user => mapper.Map<UserInfoDTO>(user));

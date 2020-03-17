@@ -31,45 +31,36 @@ namespace Blog_Rest_Api.Services
 
         public async Task<StoriesWithCountDTO> GetStoriesAsync(string query, int skip, int top)
         {
-            IEnumerable<Story> stories = null;
-            int total = 0;
+            KeyValuePair<int, IEnumerable<Story>> storiesAndCount;
             if (query != null && query.Length > 0)
             {
-                var storiesObject = await storiesRepository.SearchAsync(query, skip, top);
-                stories = storiesObject.Value;
-                total = storiesObject.Key;
+                storiesAndCount = await storiesRepository.SearchAsync(query, skip, top);
             }
             else
             {
-                var storiesObject = await storiesRepository.GetAllAsync(skip, top);
-                stories = storiesObject.Value;
-                total = storiesObject.Key;
+                storiesAndCount = await storiesRepository.GetAllAsync(skip, top);
             }
+
             StoriesWithCountDTO storiesWithCountDTO = new StoriesWithCountDTO();
-            storiesWithCountDTO.Total = total;
-            storiesWithCountDTO.Stories = stories.Select(story => mapper.Map<ResponseStoryDTO>(story));
+            storiesWithCountDTO.Total = storiesAndCount.Key;
+            storiesWithCountDTO.Stories = storiesAndCount.Value.Select(story => mapper.Map<ResponseStoryDTO>(story));
             return storiesWithCountDTO;
         }
 
         public async Task<StoriesWithCountDTO> GeUserStoriesAsync(string userId, string query, int skip, int top)
         {
-            IEnumerable<Story> stories = null;
-            int total = 0;
+            KeyValuePair<int, IEnumerable<Story>> storiesAndCount;
             if (query != null && query.Length > 0)
             {
-                var storiesObject = await storiesRepository.SearchUserStoriesAsync(userId, query, skip, top);
-                stories = storiesObject.Value;
-                total = storiesObject.Key;
+                storiesAndCount = await storiesRepository.SearchUserStoriesAsync(userId, query, skip, top);
             }
             else
             {
-                var storiesObject = await storiesRepository.GetUserStoriesAsync(userId, skip, top);
-                stories = storiesObject.Value;
-                total = storiesObject.Key;
+                storiesAndCount = await storiesRepository.GetUserStoriesAsync(userId, skip, top);
             }
             StoriesWithCountDTO storiesWithCountDTO = new StoriesWithCountDTO();
-            storiesWithCountDTO.Total = total;
-            storiesWithCountDTO.Stories = stories.Select(story => mapper.Map<ResponseStoryDTO>(story));
+            storiesWithCountDTO.Total = storiesAndCount.Key;
+            storiesWithCountDTO.Stories = storiesAndCount.Value.Select(story => mapper.Map<ResponseStoryDTO>(story));
             return storiesWithCountDTO;
         }
 

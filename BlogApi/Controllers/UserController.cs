@@ -27,9 +27,9 @@ namespace Blog_Rest_Api.Controllers
         [HttpGet("users")]
         [HttpGet("users/{skip}")]
         [HttpGet("users/{skip}/{top}")]
-        public async Task<IActionResult> GetUsers(int skip = 0, int top = 50)
+        public IActionResult GetUsers(int skip = 0, int top = 50)
         {
-            IEnumerable<UserInfoDTO> users = await userService.GetUsersAsync(skip, top);
+            IEnumerable<UserInfoDTO> users = userService.GetUsers(skip, top);
             return Ok(users);
         }
 
