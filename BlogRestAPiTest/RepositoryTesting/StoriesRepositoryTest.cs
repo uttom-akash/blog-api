@@ -9,10 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moq;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -33,35 +29,36 @@ namespace BlogRestAPiTest.RepositoryTesting
 
         public StoriesRepositoryTest(ITestOutputHelper testOutputHelper)
         {
-            
+
             dbContext = CreateDBContext();
             storiesRepository = new StoriesRepository(dbContext);
+
 
             //arrange
             expectedStoryId = Guid.NewGuid();
             expectedUser = new User { UserId = "akash" };
-            expectedRequestStoryDTO = new RequestStoryDTO {StoryId=expectedStoryId,Title="Lorem Ipsum",Body="aaaaaaaaaaaaaaaaaaaaaaaaaaaaa",PublishedDate=DateTime.UtcNow};
-            expectedStory = new Story { StoryId = expectedStoryId, Title = expectedRequestStoryDTO.Title, Body = expectedRequestStoryDTO.Body, PublishedDate = expectedRequestStoryDTO.PublishedDate,Author =expectedUser};
-            
-            
-            
+            expectedRequestStoryDTO = new RequestStoryDTO { StoryId = expectedStoryId, Title = "Lorem Ipsum", Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa", PublishedDate = DateTime.UtcNow };
+            expectedStory = new Story { StoryId = expectedStoryId, Title = expectedRequestStoryDTO.Title, Body = expectedRequestStoryDTO.Body, PublishedDate = expectedRequestStoryDTO.PublishedDate, Author = expectedUser };
+
+
             this.testOutputHelper = testOutputHelper;
         }
 
 
-        public BlogContext CreateDBContext() {
+        public BlogContext CreateDBContext()
+        {
             var options = new DbContextOptionsBuilder<BlogContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
                 .Options;
 
             IOptions<DatabaseInfo> databaseInfo = Options.Create<DatabaseInfo>(new DatabaseInfo { Host = "localhost", DatabaseName = "BlogDB" });
-            var dbContext = new BlogContext(options,databaseInfo);
+            var dbContext = new BlogContext(options, databaseInfo);
             return dbContext;
         }
 
-        
+
         [Fact]
-        public async Task TestAddStoryAdded()
+        public async Task TestAddStory_Added()
         {
             //Arrange 
             DBStatus expectedStatus = DBStatus.Added;
@@ -69,8 +66,8 @@ namespace BlogRestAPiTest.RepositoryTesting
             dbContext.SaveChanges();
 
             //Act
-            DBStatus actualStatus =await storiesRepository.AddStoryAsync(expectedStory);
-            
+            DBStatus actualStatus = await storiesRepository.AddStoryAsync(expectedStory);
+
             //Assert
             Assert.Equal(expectedStatus, actualStatus);
         }
@@ -88,7 +85,7 @@ namespace BlogRestAPiTest.RepositoryTesting
 
             //Assert
             Assert.NotNull(actualStory);
-            Assert.Equal(expectedStory.StoryId,actualStory.StoryId);
+            Assert.Equal(expectedStory.StoryId, actualStory.StoryId);
         }
 
         [Fact]
@@ -109,22 +106,6 @@ namespace BlogRestAPiTest.RepositoryTesting
         }
 
 
-
-    }
-
-    public class ResponseStoriesTestData : IEnumerable<object[]>
-    {
-
-        public IEnumerator<object[]> GetEnumerator()
-        {
-            yield return new object[] { new List<ResponseStoryDTO> {
-               new ResponseStoryDTO{ },
-               new ResponseStoryDTO{ },
-               new ResponseStoryDTO{ }
-            } };
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     }
 }
