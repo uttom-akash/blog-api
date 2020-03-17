@@ -43,14 +43,16 @@ namespace Blog_Rest_Api.Repositories
 
         public async Task<KeyValuePair<int, IEnumerable<Story>>> GetUserStoriesAsync(string userId, int skip, int top)
         {
-            IEnumerable<Story> stories = blogContext.Stories
+            var query = blogContext.Stories
                                    .AsNoTracking()
-                                   .Where(story => story.AuthorId == userId)
+                                   .Where(story => story.AuthorId == userId);
+
+            IEnumerable<Story> stories = query
                                    .Include(story => story.Author)
                                    .OrderByDescending(story => story.PublishedDate)
                                    .Skip(skip)
                                    .Take(top).AsEnumerable();
-            int totalStories = await blogContext.Stories.CountAsync();
+            int totalStories = await query.CountAsync();
             return new KeyValuePair<int, IEnumerable<Story>>(totalStories, stories);
         }
 
