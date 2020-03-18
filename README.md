@@ -4,7 +4,9 @@
 
 ## Instruction
 
-* clone the project and go to the `BlogApi` folder in root folder
+* `git clone https://github.com/i-akash/Blog-Rest-Api-Cefalo-Project.git` 
+
+* go to the `BlogApi` folder in root folder
 
 * `dotnet restore`
 
