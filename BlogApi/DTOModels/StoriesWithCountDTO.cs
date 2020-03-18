@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace Blog_Rest_Api.DTOModels{
+namespace Blog_Rest_Api.DTOModels
+{
     public class StoriesWithCountDTO
     {
-        public List<ResponseStoryDTO> Stories {get;set;}
-        public int Total {get;set;}
+        public IEnumerable<ResponseStoryDTO> Stories { get; set; }
+        public int Total { get; set; }
     }
 }

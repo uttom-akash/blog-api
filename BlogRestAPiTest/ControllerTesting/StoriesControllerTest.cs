@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Linq;
 using Xunit.Abstractions;
-using System.Collections;
+using BlogRestAPiTest.Data;
 
 namespace BlogRestAPiTest.ControllerTesting
 {
@@ -22,6 +22,18 @@ namespace BlogRestAPiTest.ControllerTesting
         private readonly Mock<IStoriesService> storiesService;
         private StoriesController storiesController;
         private readonly ControllerContext httpContext;
+
+        public ControllerContext CreateHttpContext(List<Claim> claims)
+        {
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims);
+            return new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(claimsIdentity)
+                }
+            };
+        }
 
         public StoriesControllerTest(ITestOutputHelper testOutputHelper)
         {
@@ -36,65 +48,55 @@ namespace BlogRestAPiTest.ControllerTesting
 
         }
 
-        public ControllerContext CreateHttpContext(List<Claim> claims)
-        {
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims);
-            return new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = new ClaimsPrincipal(claimsIdentity)
-                }
-            };
-        } 
-
-
-
-
 
 
 
         [Theory]
         [ClassData(typeof(RequestStoriesTestData))]
-        public async Task TestCreateStoryBadRequest(RequestStoryDTO story)
+        public async Task TestCreateStory_BadRequest(RequestStoryDTO requestStoryDTO)
         {
-            
+
             // Arrange
-            RequestStoryDTO storyDTO = new RequestStoryDTO { StoryId = Guid.NewGuid(), Title = "", Body = "", PublishedDate = DateTime.UtcNow };
             DBStatus dbStatus = DBStatus.Failed;
 
-
-            storiesService.Setup(x => x.CreateStoryAsync(storyDTO, "akash")).ReturnsAsync(dbStatus); 
+            storiesService.Setup(x => x.CreateStoryAsync(requestStoryDTO, "akash")).ReturnsAsync(dbStatus);
             storiesController.ControllerContext = httpContext;
 
             //Act
-            var actionResult =await storiesController.CreateStory(storyDTO) as BadRequestObjectResult;
+            var actionResult = await storiesController.CreateStory(requestStoryDTO) as BadRequestObjectResult;
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.Equal(400, actionResult.StatusCode);
             BadResponseDTO badResponseDTO = actionResult.Value as BadResponseDTO;
-            Assert.Equal(1,badResponseDTO.Status);
+            Assert.Equal(1, badResponseDTO.Status);
         }
 
 
 
         [Fact]
-        public async Task TestCreateStoryCreated()
+        public async Task TestCreateStory_Created()
         {
 
             // Arrange
             Guid expectedStoryId = Guid.NewGuid();
-            RequestStoryDTO storyDTO = new RequestStoryDTO { StoryId = expectedStoryId, Title = "", Body = "", PublishedDate = DateTime.UtcNow };
+            RequestStoryDTO requestStoryDTO = new RequestStoryDTO
+            {
+                StoryId = expectedStoryId,
+                Title = "",
+                Body = "",
+                PublishedDate = DateTime.UtcNow
+            };
+
             DBStatus dbStatus = DBStatus.Added;
 
-            storiesService.Setup(x => x.CreateStoryAsync(storyDTO, "akash")).ReturnsAsync(dbStatus);
+            storiesService.Setup(x => x.CreateStoryAsync(requestStoryDTO, "akash")).ReturnsAsync(dbStatus);
             storiesController.ControllerContext = httpContext;
 
-            
+
             //Act
-            var actionResult = await storiesController.CreateStory(storyDTO) as CreatedAtActionResult;
-            
+            var actionResult = await storiesController.CreateStory(requestStoryDTO) as CreatedAtActionResult;
+
             //Assert
             Assert.NotNull(actionResult);
             Assert.Equal(201, actionResult.StatusCode);
@@ -110,37 +112,38 @@ namespace BlogRestAPiTest.ControllerTesting
             string expectedTitle = "LoremIpsum";
             int expectedLength = 1;
             StoriesWithCountDTO storiesWithCountDTO = new StoriesWithCountDTO();
-            List<ResponseStoryDTO> storyDTOs = new List<ResponseStoryDTO> { new ResponseStoryDTO {Title= expectedTitle } };
+            List<ResponseStoryDTO> storyDTOs = new List<ResponseStoryDTO> { new ResponseStoryDTO { Title = expectedTitle } };
             storiesWithCountDTO.Stories = storyDTOs;
             storiesWithCountDTO.Total = 1;
 
-            storiesService.Setup(x => x.GetStoriesAsync(It.IsAny<string>(),It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(storiesWithCountDTO);
-            
+            storiesService.Setup(x => x.GetStoriesAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(storiesWithCountDTO);
+
             //Act
-            var result=await storiesController.GetStories() as OkObjectResult;
+            var result = await storiesController.GetStories() as OkObjectResult;
             var actualStories = result.Value as StoriesWithCountDTO;
-           
+
             //Assert
             Assert.NotNull(actualStories);
-            Assert.Equal(200,result.StatusCode);
+            Assert.Equal(200, result.StatusCode);
             Assert.Equal(expectedLength, actualStories.Total);
-            Assert.Equal(storiesWithCountDTO,actualStories);
+            Assert.Equal(storiesWithCountDTO, actualStories);
 
         }
 
+
         [Fact]
-        public async Task TestUpdateStoryNotFound()
+        public async Task TestUpdateStory_NotFound()
         {
             //Arrange
             string expectedTitle = "LoremIpsum";
             string userId = "akash";
             DBStatus status = DBStatus.NotFound;
-            RequestStoryDTO storyDTO = new RequestStoryDTO { Title = expectedTitle } ;
-            storiesService.Setup(x => x.ReplaceStoryAsync(storyDTO,userId)).ReturnsAsync(status);
+            RequestStoryDTO storyDTO = new RequestStoryDTO { Title = expectedTitle };
+            storiesService.Setup(x => x.ReplaceStoryAsync(storyDTO, userId)).ReturnsAsync(status);
             storiesController.ControllerContext = httpContext;
 
             //Act
-            var result =await storiesController.UpdateStory(storyDTO) as NotFoundResult;
+            var result = await storiesController.UpdateStory(storyDTO) as NotFoundResult;
 
             //Assert
             Assert.NotNull(result);
@@ -148,7 +151,7 @@ namespace BlogRestAPiTest.ControllerTesting
         }
 
         [Fact]
-        public async Task TestUpdateStoryOk()
+        public async Task TestUpdateStory_Ok()
         {
             //Arrange
             string expectedTitle = "LoremIpsum";
@@ -160,7 +163,7 @@ namespace BlogRestAPiTest.ControllerTesting
 
             //Act
             var result = await storiesController.UpdateStory(storyDTO) as OkObjectResult;
-           
+
             //Assert
             Assert.NotNull(result);
 
@@ -168,55 +171,25 @@ namespace BlogRestAPiTest.ControllerTesting
 
 
             Assert.Equal(200, result.StatusCode);
-            Assert.Equal("Modified",response.Message);
+            Assert.Equal("Modified", response.Message);
         }
 
         [Fact]
-        public async Task TestRemoveStoryForbidden()
+        public async Task TestRemoveStory_Forbidden()
         {
             //Arrange
-            Guid expectedStoryId =Guid.NewGuid();
-            storiesService.Setup(x => x.RemoveStoryAsync(expectedStoryId,"akash")).ReturnsAsync(DBStatus.Forbidden);
+            Guid expectedStoryId = Guid.NewGuid();
+            storiesService.Setup(x => x.RemoveStoryAsync(expectedStoryId, "akash")).ReturnsAsync(DBStatus.Forbidden);
             storiesController.ControllerContext = httpContext;
 
             //Act
-            var result =await storiesController.RemoveStory(expectedStoryId) as StatusCodeResult;
+            var result = await storiesController.RemoveStory(expectedStoryId) as StatusCodeResult;
 
             testOutputHelper.WriteLine(result.ToString());
-               
+
             //Assert
             Assert.NotNull(result);
-            Assert.Equal(403,result.StatusCode);
-        }
-    }
-
-
-
-
-    public class RequestStoriesTestData : IEnumerable<object[]>
-    {
-        
-        public IEnumerator<object[]> GetEnumerator()
-        {
-            yield return  new object[] { new RequestStoryDTO { StoryId = Guid.NewGuid(), Title = "", Body = "", PublishedDate = DateTime.UtcNow } };
-            yield return new object[] { new RequestStoryDTO { StoryId = Guid.NewGuid(), Title = "", Body = "", PublishedDate = DateTime.UtcNow } };
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    }
-
-   
-
-    public class ResponseStories : IEnumerable<ResponseStoryDTO>
-    {
-        public readonly List<ResponseStoryDTO> stories = new List<ResponseStoryDTO> {
-                               new ResponseStoryDTO {Title="LoremIpsum"  }
-                            };
-        public IEnumerator<ResponseStoryDTO> GetEnumerator() => stories.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
+            Assert.Equal(403, result.StatusCode);
         }
     }
 }

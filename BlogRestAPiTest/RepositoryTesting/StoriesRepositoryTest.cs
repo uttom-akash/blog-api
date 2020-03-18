@@ -1,18 +1,13 @@
-﻿using AutoMapper;
+﻿
 using Blog_Rest_Api;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Repositories;
-using Blog_Rest_Api.Services;
 using Blog_Rest_Api.Utils;
+using BlogRestAPiTest.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Moq;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -21,110 +16,97 @@ namespace BlogRestAPiTest.RepositoryTesting
 {
     public class StoriesRepositoryTest
     {
-        private readonly Mock<IMapper> mapper;
-        private readonly StoriesRepository storiesRepository;
-        private readonly Guid expectedStoryId;
-        private readonly User expectedUser;
-        private readonly RequestStoryDTO expectedRequestStoryDTO;
-        private readonly Story expectedStory;
-        private readonly ITestOutputHelper testOutputHelper;
+        private StoriesRepository storiesRepository { get; set; }
+        private User expectedUser;
+        private ITestOutputHelper testOutputHelper;
 
-        public BlogContext dbContext { get; }
+        public BlogContext dbContext { get; set; }
 
         public StoriesRepositoryTest(ITestOutputHelper testOutputHelper)
         {
-            
+            Initialize().Wait();
+            this.testOutputHelper = testOutputHelper;
+        }
+
+        public async Task Initialize()
+        {
             dbContext = CreateDBContext();
             storiesRepository = new StoriesRepository(dbContext);
 
             //arrange
-            expectedStoryId = Guid.NewGuid();
             expectedUser = new User { UserId = "akash" };
-            expectedRequestStoryDTO = new RequestStoryDTO {StoryId=expectedStoryId,Title="Lorem Ipsum",Body="aaaaaaaaaaaaaaaaaaaaaaaaaaaaa",PublishedDate=DateTime.UtcNow};
-            expectedStory = new Story { StoryId = expectedStoryId, Title = expectedRequestStoryDTO.Title, Body = expectedRequestStoryDTO.Body, PublishedDate = expectedRequestStoryDTO.PublishedDate,Author =expectedUser};
-            
-            
-            
-            this.testOutputHelper = testOutputHelper;
+
+            //insert user once
+            if (await dbContext.Users.CountAsync() < 1)
+            {
+                dbContext.Users.Add(expectedUser);
+                dbContext.SaveChanges();
+            }
+
         }
 
-
-        public BlogContext CreateDBContext() {
+        public BlogContext CreateDBContext()
+        {
             var options = new DbContextOptionsBuilder<BlogContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
                 .Options;
 
             IOptions<DatabaseInfo> databaseInfo = Options.Create<DatabaseInfo>(new DatabaseInfo { Host = "localhost", DatabaseName = "BlogDB" });
-            var dbContext = new BlogContext(options,databaseInfo);
+            var dbContext = new BlogContext(options, databaseInfo);
             return dbContext;
         }
 
-        
-        [Fact]
-        public async Task TestAddStoryAdded()
+
+        [Theory]
+        [ClassData(typeof(StoriesTestData))]
+        public async Task TestAddStory_Added(Story story)
         {
             //Arrange 
             DBStatus expectedStatus = DBStatus.Added;
-            dbContext.Users.Add(expectedUser);
-            dbContext.SaveChanges();
 
             //Act
-            DBStatus actualStatus =await storiesRepository.AddStoryAsync(expectedStory);
-            
+            DBStatus actualStatus = await storiesRepository.AddStoryAsync(story);
+
             //Assert
             Assert.Equal(expectedStatus, actualStatus);
         }
 
-        [Fact]
-        public async Task TestGetStory()
+        [Theory]
+        [ClassData(typeof(StoriesTestData))]
+        public async Task TestGetStory(Story story)
         {
             //Arrange
-            dbContext.Stories.Add(expectedStory);
+            dbContext.Stories.Add(story);
             dbContext.SaveChanges();
 
 
             //Act
-            Story actualStory = await storiesRepository.GetAsync(expectedStoryId);
+            Story actualStory = await storiesRepository.GetAsync(story.StoryId);
 
             //Assert
             Assert.NotNull(actualStory);
-            Assert.Equal(expectedStory.StoryId,actualStory.StoryId);
+            Assert.Equal(story.StoryId, actualStory.StoryId);
         }
 
-        [Fact]
-        public async Task TestReplaceStoryModified()
+        [Theory]
+        [ClassData(typeof(RequestStoriesAndStoriesTestData))]
+        public async Task TestReplaceStory_Modified(RequestStoryDTO requestStoryDTO, Story story)
         {
             //Arrange 
             DBStatus expectedStatus = DBStatus.Modified;
-            dbContext.Users.Add(expectedUser);
-            dbContext.Stories.Add(expectedStory);
+            dbContext.Stories.Add(story);
             dbContext.SaveChanges();
-            expectedRequestStoryDTO.Title = "changed";
+
+            requestStoryDTO.Title = "changed";
 
             //Act
-            DBStatus actualStatus = await storiesRepository.ReplaceStoryAsync(expectedRequestStoryDTO, "akash");
+            DBStatus actualStatus = await storiesRepository.ReplaceStoryAsync(requestStoryDTO, "akash");
 
             //Assert
             Assert.Equal(expectedStatus, actualStatus);
         }
 
 
-
-    }
-
-    public class ResponseStoriesTestData : IEnumerable<object[]>
-    {
-
-        public IEnumerator<object[]> GetEnumerator()
-        {
-            yield return new object[] { new List<ResponseStoryDTO> {
-               new ResponseStoryDTO{ },
-               new ResponseStoryDTO{ },
-               new ResponseStoryDTO{ }
-            } };
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     }
 }

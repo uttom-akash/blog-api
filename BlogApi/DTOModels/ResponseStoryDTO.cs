@@ -10,6 +10,12 @@ namespace Blog_Rest_Api.DTOModels{
         public string Body {get;set;}
         [DataType(DataType.Date)]
         public DateTime PublishedDate {get;set;}
+        
+       public DateTime LastModified {get;set;}
         public AuthorDTO Author {get;set;}
+
+        public override string ToString(){
+            return LastModified.ToString();
+        } 
     }
 }

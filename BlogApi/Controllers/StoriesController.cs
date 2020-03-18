@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using Blog_Rest_Api.Crypto;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Services;
 using Blog_Rest_Api.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 namespace Blog_Rest_Api.Controllers{
 
@@ -49,8 +52,8 @@ namespace Blog_Rest_Api.Controllers{
         [HttpGet("user-stories/{userId}")]
         [HttpGet("user-stories/{userId}/{skip}")]
         [HttpGet("user-stories/{userId}/{skip}/{top}")]
-        public async Task<IActionResult> GetUserStories([Required]string userId="",int skip=0,int top=50){
-            List<ResponseStoryDTO>  stories=await storiesService.GeUserStoriesAsync(userId,skip,top);
+        public async Task<IActionResult> GetUserStories([Required]string userId="",[FromQuery]string query="",int skip=0,int top=50){
+            StoriesWithCountDTO  stories=await storiesService.GeUserStoriesAsync(userId,query,skip,top);
             return Ok(stories);
         }
 
@@ -60,6 +63,14 @@ namespace Blog_Rest_Api.Controllers{
             ResponseStoryDTO story=await storiesService.GetStoryAsync(storyId);
             if(story==null)
                 return NotFound();
+            
+            string etag=ConverterSuit.ByteArrayToHex(HashSuit.ComputeMD5(Encoding.UTF8.GetBytes(story.ToString()))); 
+            string ETag=HttpContext.Request.Headers["If-None-Match"];
+
+            if(etag==ETag)
+                return StatusCode(StatusCodes.Status304NotModified);
+
+            HttpContext.Response.Headers.Add("ETag", new[] { etag });    
             return Ok(story); 
         }
 
@@ -67,6 +78,7 @@ namespace Blog_Rest_Api.Controllers{
         [Authorize]
         public async Task<IActionResult> UpdateStory([FromBody]RequestStoryDTO storyDTO){
             string userId=HttpContext.User.Claims.FirstOrDefault(c=>c.Type== System.Security.Claims.ClaimTypes.Sid).Value;
+            
             DBStatus status=await storiesService.ReplaceStoryAsync(storyDTO,userId);
             ResponseStatusDTO responseStatusDTO= new ResponseStatusDTO((int)status,status.ToString());
             if(status==DBStatus.NotFound)
@@ -75,6 +87,8 @@ namespace Blog_Rest_Api.Controllers{
                 return Forbid();   
             else if(status==DBStatus.NotModified)
                 return BadRequest(new BadResponseDTO{Status=(int)status,Errors=new Errors{Message =new List<string>{status.ToString()}}});
+            else if(status==DBStatus.PreconditionFailed)
+                return StatusCode(StatusCodes.Status412PreconditionFailed);
             else 
                 return Ok(responseStatusDTO);
         }

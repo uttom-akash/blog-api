@@ -1,9 +1,26 @@
 #                         							Blog Rest Api
 
+
+
+## Instruction
+
+* `git clone https://github.com/i-akash/Blog-Rest-Api-Cefalo-Project.git` 
+
+* go to the `BlogApi` folder in root folder
+
+* `dotnet restore`
+
+* `dotnet ef database update` (`N.B. must need SQL Server and entity framework tools support`)
+
+* `dotnet run`
+
+  
+
+## Postman
+
 [postman api testing](https://www.getpostman.com/collections/ee757654ff612dea86d5)
 
 
-[TOC]
 
 ## Additional Status
 
