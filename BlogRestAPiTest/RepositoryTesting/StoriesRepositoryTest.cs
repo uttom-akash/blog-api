@@ -1,13 +1,11 @@
-﻿using AutoMapper;
+﻿
 using Blog_Rest_Api;
 using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Repositories;
-using Blog_Rest_Api.Services;
 using Blog_Rest_Api.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Moq;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -17,19 +15,23 @@ namespace BlogRestAPiTest.RepositoryTesting
 {
     public class StoriesRepositoryTest
     {
-        private readonly Mock<IMapper> mapper;
-        private readonly StoriesRepository storiesRepository;
-        private readonly Guid expectedStoryId;
-        private readonly User expectedUser;
-        private readonly RequestStoryDTO expectedRequestStoryDTO;
-        private readonly Story expectedStory;
-        private readonly ITestOutputHelper testOutputHelper;
+        private StoriesRepository storiesRepository { get; set; }
+        private Guid expectedStoryId;
+        private User expectedUser;
+        private RequestStoryDTO expectedRequestStoryDTO;
+        private Story expectedStory;
+        private ITestOutputHelper testOutputHelper;
 
-        public BlogContext dbContext { get; }
+        public BlogContext dbContext { get; set; }
 
         public StoriesRepositoryTest(ITestOutputHelper testOutputHelper)
         {
+            Initialize().Wait();
+            this.testOutputHelper = testOutputHelper;
+        }
 
+        public async Task Initialize()
+        {
             dbContext = CreateDBContext();
             storiesRepository = new StoriesRepository(dbContext);
 
@@ -38,12 +40,17 @@ namespace BlogRestAPiTest.RepositoryTesting
             expectedStoryId = Guid.NewGuid();
             expectedUser = new User { UserId = "akash" };
             expectedRequestStoryDTO = new RequestStoryDTO { StoryId = expectedStoryId, Title = "Lorem Ipsum", Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa", PublishedDate = DateTime.UtcNow };
-            expectedStory = new Story { StoryId = expectedStoryId, Title = expectedRequestStoryDTO.Title, Body = expectedRequestStoryDTO.Body, PublishedDate = expectedRequestStoryDTO.PublishedDate, Author = expectedUser };
+            expectedStory = new Story { StoryId = expectedStoryId, Title = expectedRequestStoryDTO.Title, Body = expectedRequestStoryDTO.Body, PublishedDate = expectedRequestStoryDTO.PublishedDate };
+            expectedStory.AuthorId = expectedUser.UserId;
 
+            //insert user
+            if (await dbContext.Users.CountAsync() < 1)
+            {
+                dbContext.Users.Add(expectedUser);
+                dbContext.SaveChanges();
+            }
 
-            this.testOutputHelper = testOutputHelper;
         }
-
 
         public BlogContext CreateDBContext()
         {
@@ -62,8 +69,6 @@ namespace BlogRestAPiTest.RepositoryTesting
         {
             //Arrange 
             DBStatus expectedStatus = DBStatus.Added;
-            dbContext.Users.Add(expectedUser);
-            dbContext.SaveChanges();
 
             //Act
             DBStatus actualStatus = await storiesRepository.AddStoryAsync(expectedStory);
@@ -89,13 +94,13 @@ namespace BlogRestAPiTest.RepositoryTesting
         }
 
         [Fact]
-        public async Task TestReplaceStoryModified()
+        public async Task TestReplaceStory_Modified()
         {
             //Arrange 
             DBStatus expectedStatus = DBStatus.Modified;
-            dbContext.Users.Add(expectedUser);
             dbContext.Stories.Add(expectedStory);
             dbContext.SaveChanges();
+
             expectedRequestStoryDTO.Title = "changed";
 
             //Act

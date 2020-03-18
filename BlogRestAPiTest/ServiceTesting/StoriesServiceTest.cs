@@ -52,7 +52,7 @@ namespace BlogRestAPiTest.ServiceTesting
 
         [Theory]
         [ClassData(typeof(RequestStoriesAndStoriesTestData))]
-        public async Task TestCreateStoryFailed(RequestStoryDTO requestStoryDTO, Story story)
+        public async Task TestCreateStory_Failed(RequestStoryDTO requestStoryDTO, Story story)
         {
             //Arrange
             string userId = "akash";
