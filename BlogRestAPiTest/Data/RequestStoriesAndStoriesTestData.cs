@@ -11,9 +11,10 @@ namespace BlogRestAPiTest.Data
 
         public IEnumerator<object[]> GetEnumerator()
         {
+            Guid storyId = Guid.NewGuid();
             RequestStoryDTO requestStoryDTO = new RequestStoryDTO
             {
-                StoryId = Guid.NewGuid(),
+                StoryId = storyId,
                 Title = "Corona Virus",
                 Body = "Corona virus is a huge threat for Mankind",
                 PublishedDate = DateTime.UtcNow
@@ -21,10 +22,11 @@ namespace BlogRestAPiTest.Data
 
             Story story = new Story
             {
-                StoryId = Guid.NewGuid(),
+                StoryId = storyId,
                 Title = "Corona Virus",
                 Body = "Corona virus is a huge threat for Mankind",
-                PublishedDate = DateTime.UtcNow
+                PublishedDate = DateTime.UtcNow,
+                AuthorId = "akash"
             };
 
             yield return new object[] { requestStoryDTO, story };

@@ -4,6 +4,7 @@ using Blog_Rest_Api.DTOModels;
 using Blog_Rest_Api.Persistent_Model;
 using Blog_Rest_Api.Repositories;
 using Blog_Rest_Api.Utils;
+using BlogRestAPiTest.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
@@ -16,10 +17,7 @@ namespace BlogRestAPiTest.RepositoryTesting
     public class StoriesRepositoryTest
     {
         private StoriesRepository storiesRepository { get; set; }
-        private Guid expectedStoryId;
         private User expectedUser;
-        private RequestStoryDTO expectedRequestStoryDTO;
-        private Story expectedStory;
         private ITestOutputHelper testOutputHelper;
 
         public BlogContext dbContext { get; set; }
@@ -35,15 +33,10 @@ namespace BlogRestAPiTest.RepositoryTesting
             dbContext = CreateDBContext();
             storiesRepository = new StoriesRepository(dbContext);
 
-
             //arrange
-            expectedStoryId = Guid.NewGuid();
             expectedUser = new User { UserId = "akash" };
-            expectedRequestStoryDTO = new RequestStoryDTO { StoryId = expectedStoryId, Title = "Lorem Ipsum", Body = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa", PublishedDate = DateTime.UtcNow };
-            expectedStory = new Story { StoryId = expectedStoryId, Title = expectedRequestStoryDTO.Title, Body = expectedRequestStoryDTO.Body, PublishedDate = expectedRequestStoryDTO.PublishedDate };
-            expectedStory.AuthorId = expectedUser.UserId;
 
-            //insert user
+            //insert user once
             if (await dbContext.Users.CountAsync() < 1)
             {
                 dbContext.Users.Add(expectedUser);
@@ -64,47 +57,50 @@ namespace BlogRestAPiTest.RepositoryTesting
         }
 
 
-        [Fact]
-        public async Task TestAddStory_Added()
+        [Theory]
+        [ClassData(typeof(StoriesTestData))]
+        public async Task TestAddStory_Added(Story story)
         {
             //Arrange 
             DBStatus expectedStatus = DBStatus.Added;
 
             //Act
-            DBStatus actualStatus = await storiesRepository.AddStoryAsync(expectedStory);
+            DBStatus actualStatus = await storiesRepository.AddStoryAsync(story);
 
             //Assert
             Assert.Equal(expectedStatus, actualStatus);
         }
 
-        [Fact]
-        public async Task TestGetStory()
+        [Theory]
+        [ClassData(typeof(StoriesTestData))]
+        public async Task TestGetStory(Story story)
         {
             //Arrange
-            dbContext.Stories.Add(expectedStory);
+            dbContext.Stories.Add(story);
             dbContext.SaveChanges();
 
 
             //Act
-            Story actualStory = await storiesRepository.GetAsync(expectedStoryId);
+            Story actualStory = await storiesRepository.GetAsync(story.StoryId);
 
             //Assert
             Assert.NotNull(actualStory);
-            Assert.Equal(expectedStory.StoryId, actualStory.StoryId);
+            Assert.Equal(story.StoryId, actualStory.StoryId);
         }
 
-        [Fact]
-        public async Task TestReplaceStory_Modified()
+        [Theory]
+        [ClassData(typeof(RequestStoriesAndStoriesTestData))]
+        public async Task TestReplaceStory_Modified(RequestStoryDTO requestStoryDTO, Story story)
         {
             //Arrange 
             DBStatus expectedStatus = DBStatus.Modified;
-            dbContext.Stories.Add(expectedStory);
+            dbContext.Stories.Add(story);
             dbContext.SaveChanges();
 
-            expectedRequestStoryDTO.Title = "changed";
+            requestStoryDTO.Title = "changed";
 
             //Act
-            DBStatus actualStatus = await storiesRepository.ReplaceStoryAsync(expectedRequestStoryDTO, "akash");
+            DBStatus actualStatus = await storiesRepository.ReplaceStoryAsync(requestStoryDTO, "akash");
 
             //Assert
             Assert.Equal(expectedStatus, actualStatus);
