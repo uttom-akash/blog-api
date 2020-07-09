@@ -14,7 +14,8 @@
 
 * `dotnet run`
 
-  
+## Supports
+- both `JSON` and `XML` (based on `accept` headers)
 
 ## Postman
 
