@@ -22,29 +22,6 @@
 [postman api testing](https://www.getpostman.com/collections/ee757654ff612dea86d5)
 
 
-
-## Additional Status
-
-* N.B. **This status will be in response body** 
-
-| Status Code | Meaning            |
-| ----------- | ------------------ |
-| 0           | Entity Added       |
-| 1           | Failed             |
-| 2           | Entity NotFound    |
-| 3           | Entity NotModified |
-| 4           | Entity Modified    |
-| 5           | Entity NotDeleted  |
-| 6           | Entity Deleted     |
-| 7           | Forbidden          |
-| 8           | Entity Taken       |
-
- 
-
-
-
-
-
 ## Auth
 
 #### **POST** `/v1/Auth/Register`
