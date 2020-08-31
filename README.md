@@ -1,4 +1,4 @@
-#                         							Blog Rest Api
+#                         							Cefalo News Portal Rest Api
 
 
 
